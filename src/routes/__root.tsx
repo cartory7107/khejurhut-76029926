@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/use-auth";
 import { CartProvider } from "@/hooks/use-cart";
+import { WishlistProvider } from "@/hooks/use-wishlist";
 import { Header } from "@/components/site/Header";
 import { Marquee } from "@/components/site/Marquee";
 import { BottomNav } from "@/components/site/BottomNav";
@@ -67,8 +68,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <CartProvider>
-          <AuthRefresher />
-          <div className="min-h-screen flex flex-col bg-background">
+          <WishlistProvider>
+            <AuthRefresher />
+            <div className="min-h-screen flex flex-col bg-background">
             <Marquee />
             <Header />
             <main className="flex-1 pb-20 md:pb-0">
@@ -76,8 +78,9 @@ function RootComponent() {
             </main>
             <Footer />
             <BottomNav />
-          </div>
-          <Toaster position="top-center" theme="dark" toastOptions={{ className: "glass-strong" }} />
+            </div>
+            <Toaster position="top-center" theme="dark" toastOptions={{ className: "glass-strong" }} />
+          </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>

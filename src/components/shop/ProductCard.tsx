@@ -2,11 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { Heart, ShoppingBag, Star } from "lucide-react";
 import { bdt } from "@/lib/format";
 import { useCart } from "@/hooks/use-cart";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { toast } from "sonner";
 import type { Product } from "@/lib/types";
 
 export function ProductCard({ p }: { p: Product }) {
   const { add } = useCart();
+  const { has, toggle } = useWishlist();
+  const wished = has(p.id);
   const img = p.images?.[0] || "/images/products/medjool.jpg";
   const discount = p.compare_at_price && p.compare_at_price > p.price
     ? Math.round((1 - p.price / p.compare_at_price) * 100) : 0;
@@ -55,8 +58,12 @@ export function ProductCard({ p }: { p: Product }) {
         >
           <ShoppingBag className="h-3.5 w-3.5" /> Add
         </button>
-        <button className="rounded-full glass border border-border/60 p-2 hover:text-gold transition" aria-label="Wishlist">
-          <Heart className="h-3.5 w-3.5" />
+        <button
+          onClick={(e) => { e.preventDefault(); toggle(p.id); toast.success(wished ? "Removed from wishlist" : "Added to wishlist"); }}
+          className={`rounded-full glass border border-border/60 p-2 transition ${wished ? "text-gold" : "hover:text-gold"}`}
+          aria-label="Wishlist"
+        >
+          <Heart className={`h-3.5 w-3.5 ${wished ? "fill-current" : ""}`} />
         </button>
       </div>
     </div>
