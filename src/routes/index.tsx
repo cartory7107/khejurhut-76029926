@@ -66,7 +66,7 @@ function Home() {
           </div>
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
             {cats.slice(0, 4).map(c => (
-              <Link key={c.id} to="/products" search={{ category: c.slug }} className="card-3d group relative overflow-hidden rounded-2xl glass aspect-[4/5]">
+              <Link key={c.id} to="/products" search={{ cat: c.slug }} className="card-3d group relative overflow-hidden rounded-2xl glass aspect-[4/5]">
                 <div className="absolute inset-0 bg-gradient-hero opacity-60 group-hover:opacity-80 transition" />
                 {c.image_url && <img src={c.image_url} alt={c.name} className="absolute inset-0 h-full w-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" />}
                 <div className="absolute inset-x-4 bottom-4">
