@@ -1,14 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck, Truck, Quote, Leaf, Award, Mail } from "lucide-react";
 import hero from "@/assets/hero-date.jpg";
-import { fetchProducts } from "@/lib/products";
+import { fetchProducts, fetchCategories } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
 
 export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
   const { data: featured } = useQuery({ queryKey: ["featured"], queryFn: () => fetchProducts({ featured: true }) });
+  const { data: cats } = useQuery({ queryKey: ["cats"], queryFn: () => fetchCategories() });
   return (
     <>
       {/* HERO */}
@@ -56,6 +57,28 @@ function Home() {
         ))}
       </section>
 
+      {/* CATEGORIES */}
+      {cats && cats.length > 0 && (
+        <section className="mx-auto max-w-7xl px-6 pt-20">
+          <div className="mb-6">
+            <p className="text-xs uppercase tracking-[0.3em] text-gold">Curated</p>
+            <h2 className="font-display text-4xl mt-1">Shop by category</h2>
+          </div>
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+            {cats.slice(0, 4).map(c => (
+              <Link key={c.id} to="/products" search={{ cat: c.slug }} className="card-3d group relative overflow-hidden rounded-2xl glass aspect-[4/5]">
+                <div className="absolute inset-0 bg-gradient-hero opacity-60 group-hover:opacity-80 transition" />
+                {c.image_url && <img src={c.image_url} alt={c.name} className="absolute inset-0 h-full w-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" />}
+                <div className="absolute inset-x-4 bottom-4">
+                  <h3 className="font-display text-2xl">{c.name}</h3>
+                  <p className="text-xs text-muted-foreground line-clamp-2">{c.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* FEATURED */}
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="flex items-end justify-between mb-8">
@@ -67,6 +90,65 @@ function Home() {
         </div>
         <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {(featured || []).slice(0, 8).map(p => <ProductCard key={p.id} p={p} />)}
+        </div>
+      </section>
+
+      {/* STORY */}
+      <section className="relative overflow-hidden bg-gradient-surface py-24">
+        <div className="mx-auto max-w-5xl px-6 grid gap-10 md:grid-cols-2 items-center">
+          <div className="space-y-5">
+            <p className="text-xs uppercase tracking-[0.3em] text-gold">Our heritage</p>
+            <h2 className="font-display text-4xl md:text-5xl leading-tight">From the oases of <span className="text-gradient-gold">Madinah</span> to your majlis.</h2>
+            <p className="text-muted-foreground">For three generations, the Khejur Hat family has hand-selected each fruit at the peak of harvest — sun-dried under the Arabian sky, sealed within hours, and flown directly to Bangladesh. No middlemen. No compromises.</p>
+            <div className="grid grid-cols-3 gap-4 pt-2">
+              {[{i:Leaf,t:"100% Halal"},{i:Award,t:"Royal Grade"},{i:ShieldCheck,t:"Lab Tested"}].map(({i:I,t}) => (
+                <div key={t} className="glass rounded-xl p-3 text-center">
+                  <I className="h-5 w-5 mx-auto text-gold mb-1" />
+                  <div className="text-xs">{t}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="relative">
+            <div className="aspect-square rounded-3xl overflow-hidden shadow-elegant glow-amber">
+              <img src={hero} alt="Heritage" className="h-full w-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="text-center mb-10">
+          <p className="text-xs uppercase tracking-[0.3em] text-gold">Loved across Bangladesh</p>
+          <h2 className="font-display text-4xl mt-1">Words from our patrons</h2>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {[
+            { n: "Tahmina R.", c: "Dhaka", q: "The Ajwa was unreal — softer and sweeter than anything I've had from a Dubai souk. The velvet box made it perfect for Eid gifting." },
+            { n: "Imran H.", c: "Chattogram", q: "Delivery was overnight and the packaging felt like a luxury watch. My family won't buy dates anywhere else now." },
+            { n: "Sumi A.", c: "Sylhet", q: "Khejur Hat's Medjool is on another level. The gold-foil presentation is genuinely museum-worthy." },
+          ].map(t => (
+            <figure key={t.n} className="glass rounded-2xl p-6 space-y-3">
+              <Quote className="h-5 w-5 text-gold" />
+              <blockquote className="text-sm leading-relaxed">"{t.q}"</blockquote>
+              <figcaption className="text-xs text-muted-foreground">— {t.n}, {t.c}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section className="mx-auto max-w-5xl px-6 pb-24">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-hero glass-strong p-10 md:p-14 text-center hero-particles">
+          <Mail className="h-6 w-6 mx-auto text-gold mb-3" />
+          <h2 className="font-display text-3xl md:text-4xl">Join the Majlis</h2>
+          <p className="text-muted-foreground mt-2 max-w-md mx-auto text-sm">Be first to hear of new harvests, Ramadan-only releases, and private gifting collections.</p>
+          <form onSubmit={(e) => { e.preventDefault(); }} className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <input type="email" required placeholder="your@email.com"
+              className="flex-1 rounded-full bg-input/80 border border-border px-5 py-3 text-sm outline-none focus:border-gold" />
+            <button className="rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold text-primary-foreground shadow-gold">Subscribe</button>
+          </form>
         </div>
       </section>
     </>
