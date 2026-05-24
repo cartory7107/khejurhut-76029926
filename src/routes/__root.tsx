@@ -76,15 +76,7 @@ function RootComponent() {
             <AuthRefresher />
             <NavProgress />
             <ScrollToTop />
-            <div className="min-h-screen flex flex-col bg-background">
-            <Marquee />
-            <Header />
-            <main key={undefined} className="flex-1 pb-20 md:pb-0 page-transition">
-              <Outlet />
-            </main>
-            <Footer />
-            <BottomNav />
-            </div>
+            <Shell />
             <Toaster position="top-center" theme="dark" toastOptions={{ className: "glass-strong" }} />
           </I18nProvider>
           </WishlistProvider>
@@ -92,6 +84,26 @@ function RootComponent() {
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function Shell() {
+  const pathname = useRouterStatePath();
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Marquee />
+      <Header />
+      <main key={pathname} className="flex-1 pb-20 md:pb-0 page-transition">
+        <Outlet />
+      </main>
+      <Footer />
+      <BottomNav />
+    </div>
+  );
+}
+
+function useRouterStatePath() {
+  const { useRouterState } = require("@tanstack/react-router") as typeof import("@tanstack/react-router");
+  return useRouterState({ select: (s) => s.location.pathname });
 }
 
 function AuthRefresher() {
