@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { LayoutDashboard, Package, ShoppingBag, Tag, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Tag, ArrowLeft, Ticket } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({ component: AdminLayout });
 
@@ -27,6 +27,7 @@ function AdminLayout() {
     { to: "/admin/products", label: "Products", icon: Package },
     { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
     { to: "/admin/categories", label: "Categories", icon: Tag },
+    { to: "/admin/coupons", label: "Coupons", icon: Ticket },
   ] as const;
 
   return (
