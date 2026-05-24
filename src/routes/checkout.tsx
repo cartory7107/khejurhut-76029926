@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { bdt } from "@/lib/format";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, MapPin, CreditCard, ClipboardList } from "lucide-react";
+import { Check, MapPin, CreditCard, ClipboardList, Tag, X } from "lucide-react";
 
 export const Route = createFileRoute("/checkout")({ component: Checkout });
 
@@ -17,8 +17,33 @@ function Checkout() {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [method, setMethod] = useState<"cod" | "bkash" | "card">("cod");
   const [busy, setBusy] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
+  const [applying, setApplying] = useState(false);
   const shipping = subtotal > 2000 || subtotal === 0 ? 0 : 100;
-  const total = subtotal + shipping;
+  const discount = coupon?.discount || 0;
+  const total = Math.max(0, subtotal - discount) + shipping;
+
+  const applyCoupon = async () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
+    setApplying(true);
+    const { data, error } = await supabase
+      .from("coupons")
+      .select("*")
+      .eq("code", code)
+      .eq("is_active", true)
+      .maybeSingle();
+    setApplying(false);
+    if (error || !data) return toast.error("Invalid coupon");
+    if (data.expires_at && new Date(data.expires_at) < new Date()) return toast.error("Coupon expired");
+    if (subtotal < Number(data.min_subtotal)) return toast.error(`Minimum order ${data.min_subtotal} required`);
+    const d = data.type === "percent"
+      ? Math.round((subtotal * Number(data.value)) / 100)
+      : Number(data.value);
+    setCoupon({ code: data.code, discount: Math.min(d, subtotal) });
+    toast.success(`Coupon ${data.code} applied`);
+  };
 
   const placeOrder = async () => {
     if (!user) { toast.error("Please sign in to place an order"); nav({ to: "/auth", search: { redirect: "/checkout" } }); return; }
@@ -28,6 +53,8 @@ function Checkout() {
       user_id: user.id, ...form,
       notes: `${form.notes}${form.notes ? " | " : ""}Payment: ${method.toUpperCase()}`,
       subtotal, shipping, total,
+      coupon_code: coupon?.code || null,
+      discount,
     }).select().single();
     if (error || !order) { toast.error(error?.message || "Failed"); setBusy(false); return; }
     const lines = items.map(i => ({ order_id: order.id, product_id: i.product_id, product_name: i.product.name, price: i.product.price, quantity: i.quantity }));
@@ -141,6 +168,30 @@ function Checkout() {
             <>
               <div className="border-t border-border/60 pt-2 text-sm flex justify-between"><span className="text-muted-foreground">Subtotal</span><span>{bdt(subtotal)}</span></div>
               <div className="text-sm flex justify-between"><span className="text-muted-foreground">Shipping</span><span>{shipping === 0 ? "FREE" : bdt(shipping)}</span></div>
+              {discount > 0 && (
+                <div className="text-sm flex justify-between text-gold"><span>Discount ({coupon?.code})</span><span>−{bdt(discount)}</span></div>
+              )}
+              <div className="pt-2">
+                {coupon ? (
+                  <button onClick={() => { setCoupon(null); setCouponInput(""); }} className="w-full text-xs glass border border-border rounded-xl px-3 py-2 flex items-center justify-between hover:text-destructive">
+                    <span className="flex items-center gap-1.5"><Tag className="h-3 w-3 text-gold" /> {coupon.code} applied</span>
+                    <X className="h-3 w-3" />
+                  </button>
+                ) : (
+                  <div className="flex gap-1.5">
+                    <input
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      placeholder="Promo code"
+                      className="flex-1 rounded-xl bg-input border border-border px-3 py-2 text-xs outline-none focus:border-gold"
+                    />
+                    <button onClick={applyCoupon} disabled={applying || !couponInput}
+                      className="rounded-xl bg-gold/10 border border-gold/40 px-3 text-xs text-gold disabled:opacity-50">
+                      Apply
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           )}
           <div className="border-t border-border/60 pt-3 flex justify-between font-display text-lg"><span>Total</span><span className="text-gradient-gold">{bdt(total)}</span></div>
