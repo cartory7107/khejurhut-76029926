@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, createRootRouteWithContext, useRouter, HeadContent, Scripts, Link } from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext, useRouter, useRouterState, HeadContent, Scripts, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
@@ -102,7 +102,6 @@ function Shell() {
 }
 
 function useRouterStatePath() {
-  const { useRouterState } = require("@tanstack/react-router") as typeof import("@tanstack/react-router");
   return useRouterState({ select: (s) => s.location.pathname });
 }
 
