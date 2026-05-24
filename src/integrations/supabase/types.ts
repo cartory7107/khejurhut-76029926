@@ -76,6 +76,39 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          min_subtotal: number
+          type: Database["public"]["Enums"]["coupon_type"]
+          value: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          min_subtotal?: number
+          type?: Database["public"]["Enums"]["coupon_type"]
+          value: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          min_subtotal?: number
+          type?: Database["public"]["Enums"]["coupon_type"]
+          value?: number
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           id: string
@@ -118,11 +151,45 @@ export type Database = {
           },
         ]
       }
+      order_status_history: {
+        Row: {
+          created_at: string
+          id: string
+          note: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id: string
+          status: Database["public"]["Enums"]["order_status"]
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          note?: string | null
+          order_id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           address: string
           city: string
+          coupon_code: string | null
           created_at: string
+          discount: number
           full_name: string
           id: string
           notes: string | null
@@ -136,7 +203,9 @@ export type Database = {
         Insert: {
           address: string
           city: string
+          coupon_code?: string | null
           created_at?: string
+          discount?: number
           full_name: string
           id?: string
           notes?: string | null
@@ -150,7 +219,9 @@ export type Database = {
         Update: {
           address?: string
           city?: string
+          coupon_code?: string | null
           created_at?: string
+          discount?: number
           full_name?: string
           id?: string
           notes?: string | null
@@ -162,6 +233,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      product_reviews: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          product_id: string
+          rating: number
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          product_id: string
+          rating: number
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          product_id?: string
+          rating?: number
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -323,6 +435,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "customer"
+      coupon_type: "percent" | "fixed"
       order_status:
         | "pending"
         | "confirmed"
@@ -457,6 +570,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "customer"],
+      coupon_type: ["percent", "fixed"],
       order_status: [
         "pending",
         "confirmed",
