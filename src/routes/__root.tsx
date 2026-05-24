@@ -6,10 +6,13 @@ import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/use-auth";
 import { CartProvider } from "@/hooks/use-cart";
 import { WishlistProvider } from "@/hooks/use-wishlist";
+import { I18nProvider } from "@/hooks/use-i18n";
 import { Header } from "@/components/site/Header";
 import { Marquee } from "@/components/site/Marquee";
 import { BottomNav } from "@/components/site/BottomNav";
 import { Footer } from "@/components/site/Footer";
+import { NavProgress } from "@/components/site/NavProgress";
+import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -69,17 +72,21 @@ function RootComponent() {
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
+          <I18nProvider>
             <AuthRefresher />
+            <NavProgress />
+            <ScrollToTop />
             <div className="min-h-screen flex flex-col bg-background">
             <Marquee />
             <Header />
-            <main className="flex-1 pb-20 md:pb-0">
+            <main key={undefined} className="flex-1 pb-20 md:pb-0 page-transition">
               <Outlet />
             </main>
             <Footer />
             <BottomNav />
             </div>
             <Toaster position="top-center" theme="dark" toastOptions={{ className: "glass-strong" }} />
+          </I18nProvider>
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>
