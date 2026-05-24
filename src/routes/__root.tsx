@@ -1,15 +1,18 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, createRootRouteWithContext, useRouter, HeadContent, Scripts, Link } from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext, useRouter, useRouterState, HeadContent, Scripts, Link } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/hooks/use-auth";
 import { CartProvider } from "@/hooks/use-cart";
 import { WishlistProvider } from "@/hooks/use-wishlist";
+import { I18nProvider } from "@/hooks/use-i18n";
 import { Header } from "@/components/site/Header";
 import { Marquee } from "@/components/site/Marquee";
 import { BottomNav } from "@/components/site/BottomNav";
 import { Footer } from "@/components/site/Footer";
+import { NavProgress } from "@/components/site/NavProgress";
+import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -69,22 +72,37 @@ function RootComponent() {
       <AuthProvider>
         <CartProvider>
           <WishlistProvider>
+          <I18nProvider>
             <AuthRefresher />
-            <div className="min-h-screen flex flex-col bg-background">
-            <Marquee />
-            <Header />
-            <main className="flex-1 pb-20 md:pb-0">
-              <Outlet />
-            </main>
-            <Footer />
-            <BottomNav />
-            </div>
+            <NavProgress />
+            <ScrollToTop />
+            <Shell />
             <Toaster position="top-center" theme="dark" toastOptions={{ className: "glass-strong" }} />
+          </I18nProvider>
           </WishlistProvider>
         </CartProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function Shell() {
+  const pathname = useRouterStatePath();
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Marquee />
+      <Header />
+      <main key={pathname} className="flex-1 pb-20 md:pb-0 page-transition">
+        <Outlet />
+      </main>
+      <Footer />
+      <BottomNav />
+    </div>
+  );
+}
+
+function useRouterStatePath() {
+  return useRouterState({ select: (s) => s.location.pathname });
 }
 
 function AuthRefresher() {
