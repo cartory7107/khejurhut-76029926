@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Logo } from "./Logo";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
+import { useI18n } from "@/hooks/use-i18n";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
-  const [lang, setLang] = useState<"EN" | "BN">("EN");
+  const { lang, setLang, t } = useI18n();
   const { count } = useCart();
   const { user, isAdmin } = useAuth();
   const nav = useNavigate();
@@ -26,22 +27,22 @@ export function Header() {
         </button>
         <Logo />
         <nav className="hidden md:flex items-center gap-6 text-sm text-muted-foreground ml-6">
-          <Link to="/" className="hover:text-gold transition-colors">Home</Link>
-          <Link to="/products" className="hover:text-gold transition-colors">Shop</Link>
-          <Link to="/categories" className="hover:text-gold transition-colors">Categories</Link>
-          <Link to="/account/orders" className="hover:text-gold transition-colors">Orders</Link>
-          {isAdmin && <Link to="/admin" className="text-gold">Admin</Link>}
+          <Link to="/" className="hover:text-gold transition-colors">{t("home")}</Link>
+          <Link to="/products" className="hover:text-gold transition-colors">{t("shop")}</Link>
+          <Link to="/categories" className="hover:text-gold transition-colors">{t("categories")}</Link>
+          <Link to="/account/orders" className="hover:text-gold transition-colors">{t("orders")}</Link>
+          {isAdmin && <Link to="/admin" className="text-gold">{t("admin")}</Link>}
         </nav>
         <form onSubmit={submit} className="ml-auto hidden md:flex relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             value={q} onChange={(e) => setQ(e.target.value)}
-            placeholder="Search premium dates..."
+            placeholder={t("search")}
             className="w-full rounded-full bg-input/60 border border-border pl-9 pr-4 py-2 text-sm outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition"
           />
         </form>
         <button
-          onClick={() => setLang(l => l === "EN" ? "BN" : "EN")}
+          onClick={() => setLang(lang === "EN" ? "BN" : "EN")}
           className="hidden sm:inline-flex text-xs px-2.5 py-1 rounded-full border border-border/60 text-muted-foreground hover:text-gold hover:border-gold/50 transition"
           aria-label="Language"
         >
