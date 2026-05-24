@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { bdt } from "@/lib/format";
-import { Check, Clock, Package, Truck, Home } from "lucide-react";
+import { Check, Clock, Package, Truck, Home, ChevronDown, ChevronUp } from "lucide-react";
 
 export const Route = createFileRoute("/account/orders")({ component: Orders });
 
@@ -40,11 +41,15 @@ function Timeline({ status }: { status: string }) {
 
 function Orders() {
   const { user } = useAuth();
+  const [openId, setOpenId] = useState<string | null>(null);
   const { data } = useQuery({
     queryKey: ["my-orders", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.from("orders").select("*, order_items(*)").order("created_at", { ascending: false });
+      const { data } = await supabase
+        .from("orders")
+        .select("*, order_items(*), order_status_history(*)")
+        .order("created_at", { ascending: false });
       return data || [];
     },
   });
@@ -67,7 +72,32 @@ function Orders() {
               <div key={i.id} className="flex justify-between"><span>{i.product_name} × {i.quantity}</span><span>{bdt(Number(i.price) * i.quantity)}</span></div>
             ))}
           </div>
+          {Number(o.discount) > 0 && (
+            <div className="text-xs text-gold mt-2 flex justify-between"><span>Discount {o.coupon_code ? `(${o.coupon_code})` : ""}</span><span>−{bdt(Number(o.discount))}</span></div>
+          )}
           <div className="border-t border-border/60 mt-3 pt-3 flex justify-between font-display"><span>Total</span><span className="text-gradient-gold">{bdt(Number(o.total))}</span></div>
+
+          <button
+            onClick={() => setOpenId(openId === o.id ? null : o.id)}
+            className="mt-3 text-xs text-muted-foreground hover:text-gold flex items-center gap-1"
+          >
+            {openId === o.id ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            {openId === o.id ? "Hide" : "Show"} tracking details
+          </button>
+          {openId === o.id && (
+            <ol className="mt-3 space-y-2 border-l border-gold/40 pl-4">
+              {(o.order_status_history || [])
+                .slice()
+                .sort((a: any, b: any) => +new Date(a.created_at) - +new Date(b.created_at))
+                .map((h: any) => (
+                  <li key={h.id} className="text-xs">
+                    <div className="capitalize text-gold">{h.status}</div>
+                    <div className="text-muted-foreground">{new Date(h.created_at).toLocaleString()}</div>
+                    {h.note && <div className="text-muted-foreground italic">{h.note}</div>}
+                  </li>
+                ))}
+            </ol>
+          )}
         </div>
       ))}
     </div>
