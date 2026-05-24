@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { pushRecent } from "@/hooks/use-recent";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ProductReviews } from "@/components/shop/ProductReviews";
 
 export const Route = createFileRoute("/products/$slug")({ component: PDP });
 
@@ -71,6 +72,8 @@ function PDP() {
           {related?.filter(r => r.id !== p.id).slice(0, 4).map(r => <ProductCard key={r.id} p={r} />)}
         </div>
       </div>
+
+      <ProductReviews productId={p.id} />
     </section>
   );
 }
