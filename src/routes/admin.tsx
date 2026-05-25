@@ -22,14 +22,14 @@ function AdminLayout() {
     </div>
   );
 
-  const allLinks = [
+  const allLinks: { to: string; label: string; icon: any; perm: string | null; superOnly?: boolean }[] = [
     { to: "/admin", label: "Dashboard", icon: LayoutDashboard, perm: null },
     { to: "/admin/products", label: "Products", icon: Package, perm: "products.manage" },
     { to: "/admin/orders", label: "Orders", icon: ShoppingBag, perm: "orders.manage" },
     { to: "/admin/categories", label: "Categories", icon: Tag, perm: "categories.manage" },
     { to: "/admin/coupons", label: "Coupons", icon: Ticket, perm: "coupons.manage" },
     { to: "/admin/users", label: "Users & Roles", icon: Users, perm: "users.manage", superOnly: true },
-  ] as const;
+  ];
   const links = allLinks.filter(l => {
     if (l.superOnly) return isSuperAdmin;
     if (!l.perm) return true;
@@ -41,7 +41,7 @@ function AdminLayout() {
       <aside className="glass rounded-2xl p-3 h-fit space-y-1">
         <Link to="/" className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-gold"><ArrowLeft className="h-3 w-3" /> Store</Link>
         {links.map(({ to, label, icon: I }) => (
-          <Link key={to} to={to} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-accent text-sm"><I className="h-4 w-4" /> {label}</Link>
+          <Link key={to} to={to as any} className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-accent text-sm"><I className="h-4 w-4" /> {label}</Link>
         ))}
       </aside>
       <div><Outlet /></div>
