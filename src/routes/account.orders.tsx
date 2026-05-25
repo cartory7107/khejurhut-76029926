@@ -61,7 +61,7 @@ function Orders() {
         <div key={o.id} className="glass rounded-2xl p-5">
           <div className="flex justify-between items-start mb-3">
             <div>
-              <div className="text-xs text-muted-foreground">Order #{o.id.slice(0, 8)}</div>
+              <div className="text-sm text-gold font-semibold">{o.order_number || `#${o.id.slice(0, 8)}`}</div>
               <div className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</div>
             </div>
             <span className="rounded-full bg-gradient-gold px-3 py-1 text-xs text-primary-foreground capitalize">{o.status}</span>

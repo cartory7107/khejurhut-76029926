@@ -13,6 +13,7 @@ import { BottomNav } from "@/components/site/BottomNav";
 import { Footer } from "@/components/site/Footer";
 import { NavProgress } from "@/components/site/NavProgress";
 import { ScrollToTop } from "@/components/site/ScrollToTop";
+import { PageLoader } from "@/components/site/PageLoader";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -44,6 +45,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     <html lang="en"><head><HeadContent /></head><body>{children}<Scripts /></body></html>
   ),
   component: RootComponent,
+  pendingComponent: PageLoader,
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center bg-background">
       <div className="text-center space-y-4">

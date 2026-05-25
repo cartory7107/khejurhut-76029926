@@ -28,7 +28,10 @@ function AdminOrders() {
           <tbody>
             {data?.map((o: any) => (
               <tr key={o.id} className="border-b border-border/30">
-                <td className="p-3 text-xs">#{o.id.slice(0, 8)}<div className="text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</div></td>
+                <td className="p-3 text-xs">
+                  <div className="text-gold font-semibold">{o.order_number || `#${o.id.slice(0, 8)}`}</div>
+                  <div className="text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</div>
+                </td>
                 <td className="p-3">{o.full_name}<div className="text-xs text-muted-foreground">{o.phone}</div></td>
                 <td className="p-3 text-gold">{bdt(Number(o.total))}</td>
                 <td className="p-3">
