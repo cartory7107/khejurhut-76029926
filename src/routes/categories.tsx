@@ -14,7 +14,8 @@ function Cats() {
         {data?.map(c => (
           <Link key={c.id} to="/products" search={{ cat: c.slug }}
             className="card-3d group relative overflow-hidden rounded-2xl glass aspect-[4/5] flex items-end p-6 border border-border/60">
-            <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
+            <img src={c.image_url || "/images/products/medjool.jpg"} alt={c.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-transparent" />
             <div className="relative z-10">
               <h3 className="font-display text-2xl text-gradient-gold">{c.name}</h3>
               <p className="text-xs text-muted-foreground mt-1">{c.description || "Explore →"}</p>
