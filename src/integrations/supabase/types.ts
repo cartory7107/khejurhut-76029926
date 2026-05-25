@@ -193,6 +193,7 @@ export type Database = {
           full_name: string
           id: string
           notes: string | null
+          order_number: string | null
           phone: string
           shipping: number
           status: Database["public"]["Enums"]["order_status"]
@@ -209,6 +210,7 @@ export type Database = {
           full_name: string
           id?: string
           notes?: string | null
+          order_number?: string | null
           phone: string
           shipping?: number
           status?: Database["public"]["Enums"]["order_status"]
@@ -225,6 +227,7 @@ export type Database = {
           full_name?: string
           id?: string
           notes?: string | null
+          order_number?: string | null
           phone?: string
           shipping?: number
           status?: Database["public"]["Enums"]["order_status"]
@@ -356,6 +359,7 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -363,6 +367,7 @@ export type Database = {
           full_name?: string | null
           id: string
           phone?: string | null
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -370,6 +375,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          username?: string | null
         }
         Relationships: []
       }
@@ -434,7 +440,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "customer"
+      app_role: "admin" | "customer" | "super_admin" | "staff"
       coupon_type: "percent" | "fixed"
       order_status:
         | "pending"
@@ -569,7 +575,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "customer"],
+      app_role: ["admin", "customer", "super_admin", "staff"],
       coupon_type: ["percent", "fixed"],
       order_status: [
         "pending",
