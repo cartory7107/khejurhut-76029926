@@ -1,12 +1,12 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { LayoutDashboard, Package, ShoppingBag, Tag, ArrowLeft, Ticket } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingBag, Tag, ArrowLeft, Ticket, Users } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({ component: AdminLayout });
 
 function AdminLayout() {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, isSuperAdmin, hasPermission, loading } = useAuth();
   const nav = useNavigate();
   useEffect(() => {
     if (loading) return;
@@ -22,13 +22,19 @@ function AdminLayout() {
     </div>
   );
 
-  const links = [
-    { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-    { to: "/admin/products", label: "Products", icon: Package },
-    { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
-    { to: "/admin/categories", label: "Categories", icon: Tag },
-    { to: "/admin/coupons", label: "Coupons", icon: Ticket },
+  const allLinks = [
+    { to: "/admin", label: "Dashboard", icon: LayoutDashboard, perm: null },
+    { to: "/admin/products", label: "Products", icon: Package, perm: "products.manage" },
+    { to: "/admin/orders", label: "Orders", icon: ShoppingBag, perm: "orders.manage" },
+    { to: "/admin/categories", label: "Categories", icon: Tag, perm: "categories.manage" },
+    { to: "/admin/coupons", label: "Coupons", icon: Ticket, perm: "coupons.manage" },
+    { to: "/admin/users", label: "Users & Roles", icon: Users, perm: "users.manage", superOnly: true },
   ] as const;
+  const links = allLinks.filter(l => {
+    if (l.superOnly) return isSuperAdmin;
+    if (!l.perm) return true;
+    return hasPermission(l.perm);
+  });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 grid gap-6 md:grid-cols-[220px_1fr]">
