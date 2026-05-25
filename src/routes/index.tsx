@@ -67,9 +67,9 @@ function Home() {
           <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
             {cats.slice(0, 4).map(c => (
               <Link key={c.id} to="/products" search={{ cat: c.slug }} className="card-3d group relative overflow-hidden rounded-2xl glass aspect-[4/5]">
-                <div className="absolute inset-0 bg-gradient-hero opacity-60 group-hover:opacity-80 transition" />
-                {c.image_url && <img src={c.image_url} alt={c.name} className="absolute inset-0 h-full w-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" />}
-                <div className="absolute inset-x-4 bottom-4">
+                <img src={c.image_url || "/images/products/medjool.jpg"} alt={c.name} className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/35 to-transparent" />
+                <div className="absolute inset-x-4 bottom-4 z-10">
                   <h3 className="font-display text-2xl">{c.name}</h3>
                   <p className="text-xs text-muted-foreground line-clamp-2">{c.description}</p>
                 </div>
@@ -89,7 +89,7 @@ function Home() {
           <Link to="/products" className="text-sm text-gold hover:underline">View all →</Link>
         </div>
         <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {(featured || []).slice(0, 8).map(p => <ProductCard key={p.id} p={p} />)}
+          {(featured || []).map(p => <ProductCard key={p.id} p={p} />)}
         </div>
       </section>
 
