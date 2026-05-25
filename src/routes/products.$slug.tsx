@@ -33,7 +33,20 @@ function PDP() {
 
   useEffect(() => { if (p) pushRecent(p.id); }, [p]);
 
-  if (isLoading) return <div className="mx-auto max-w-7xl p-12 text-muted-foreground">Loading...</div>;
+  if (isLoading) return (
+    <section className="mx-auto max-w-7xl px-6 py-10">
+      <div className="grid gap-10 md:grid-cols-2">
+        <div className="aspect-square rounded-3xl bg-cocoa animate-pulse" />
+        <div className="space-y-4">
+          <div className="h-4 w-32 rounded-full bg-muted animate-pulse" />
+          <div className="h-12 w-3/4 rounded-xl bg-muted animate-pulse" />
+          <div className="h-6 w-1/2 rounded-full bg-muted animate-pulse" />
+          <div className="h-24 w-full rounded-xl bg-muted animate-pulse" />
+          <div className="h-12 w-full rounded-full bg-muted animate-pulse" />
+        </div>
+      </div>
+    </section>
+  );
   if (!p) return <div className="mx-auto max-w-7xl p-12">Not found. <Link to="/products" className="text-gold">Back</Link></div>;
   const img = p.images?.[0] || "/images/products/medjool.jpg";
 
