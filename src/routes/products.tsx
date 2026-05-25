@@ -4,6 +4,23 @@ import { z } from "zod";
 import { fetchProducts, fetchCategories } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
 
+function ProductGridSkeleton() {
+  return (
+    <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div key={index} className="overflow-hidden rounded-2xl border border-border/60 bg-card/60">
+          <div className="aspect-square animate-pulse bg-cocoa" />
+          <div className="space-y-3 p-4">
+            <div className="h-3 w-20 animate-pulse rounded-full bg-muted" />
+            <div className="h-5 w-3/4 animate-pulse rounded-full bg-muted" />
+            <div className="h-4 w-24 animate-pulse rounded-full bg-muted" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/products")({
   validateSearch: z.object({ q: z.string().optional(), cat: z.string().optional() }),
   component: ProductsPage,
@@ -29,7 +46,7 @@ function ProductsPage() {
           </Link>
         ))}
       </div>
-      {isLoading ? <div className="text-muted-foreground">Loading...</div> : (
+      {isLoading ? <ProductGridSkeleton /> : (
         <div className="grid gap-5 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products?.map(p => <ProductCard key={p.id} p={p} />)}
           {products?.length === 0 && <p className="text-muted-foreground col-span-full">No products found.</p>}
