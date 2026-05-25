@@ -45,9 +45,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     <html lang="en"><head><HeadContent /></head><body>{children}<Scripts /></body></html>
   ),
   component: RootComponent,
-  defaultPendingComponent: PageLoader,
-  defaultPendingMs: 100,
-  defaultPendingMinMs: 200,
+  pendingComponent: PageLoader,
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center bg-background">
       <div className="text-center space-y-4">
