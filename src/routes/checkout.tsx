@@ -6,6 +6,7 @@ import { bdt } from "@/lib/format";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Check, MapPin, CreditCard, ClipboardList, Tag, X } from "lucide-react";
+import { GoldParticles } from "@/components/site/GoldParticles";
 
 export const Route = createFileRoute("/checkout")({ component: Checkout });
 
@@ -15,7 +16,7 @@ function Checkout() {
   const nav = useNavigate();
   const [form, setForm] = useState({ full_name: "", phone: "", address: "", city: "Dhaka", notes: "" });
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [method, setMethod] = useState<"cod" | "bkash" | "card">("cod");
+  const [method, setMethod] = useState<"pad" | "bkash" | "card">("pad");
   const [busy, setBusy] = useState(false);
   const [couponInput, setCouponInput] = useState("");
   const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -49,9 +50,10 @@ function Checkout() {
     if (!user) { toast.error("Please sign in to place an order"); nav({ to: "/auth", search: { redirect: "/checkout" } }); return; }
     if (items.length === 0) return;
     setBusy(true);
+    const methodLabel = method === "pad" ? "Pay After Delivery" : method === "bkash" ? "bKash" : "Card / SSLCommerz";
     const { data: order, error } = await supabase.from("orders").insert({
       user_id: user.id, ...form,
-      notes: `${form.notes}${form.notes ? " | " : ""}Payment: ${method.toUpperCase()}`,
+      notes: `${form.notes}${form.notes ? " | " : ""}Payment: ${methodLabel}`,
       subtotal, shipping, total,
       coupon_code: coupon?.code || null,
       discount,
@@ -61,7 +63,7 @@ function Checkout() {
     await supabase.from("order_items").insert(lines);
     await clear();
     toast.success("Order placed!");
-    nav({ to: "/account/orders" });
+    nav({ to: "/order-success/$id", params: { id: order.id } });
   };
 
   const canNext1 = form.full_name && form.phone && form.address && form.city;
@@ -72,8 +74,14 @@ function Checkout() {
   ] as const;
 
   return (
-    <section className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="font-display text-4xl mb-6">Checkout</h1>
+    <section className="relative mx-auto max-w-4xl px-6 py-12">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <GoldParticles density={30} />
+      </div>
+      <div className="mb-6">
+        <p className="font-arabic text-gold text-lg">الدفع الفاخر</p>
+        <h1 className="font-display text-4xl text-gradient-gold">Premium Checkout</h1>
+      </div>
 
       {/* Stepper */}
       <ol className="flex items-center gap-3 mb-8 text-sm">
@@ -115,7 +123,7 @@ function Checkout() {
             <div className="glass rounded-2xl p-6 space-y-3">
               <h2 className="font-display text-xl mb-2">Payment method</h2>
               {([
-                { id: "cod", label: "Cash on Delivery", desc: "Pay when your order arrives" },
+                { id: "pad", label: "Pay After Delivery", desc: "Receive first, pay at your doorstep — hand to hand" },
                 { id: "bkash", label: "bKash", desc: "Mobile financial service (integration coming)" },
                 { id: "card", label: "Card / SSLCommerz", desc: "Visa, Mastercard, Amex (integration coming)" },
               ] as const).map((opt) => (
@@ -143,7 +151,7 @@ function Checkout() {
               </div>
               <div className="text-sm">
                 <div className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Payment</div>
-                <div>{method === "cod" ? "Cash on Delivery" : method === "bkash" ? "bKash" : "Card / SSLCommerz"}</div>
+                <div>{method === "pad" ? "Pay After Delivery (Doorstep)" : method === "bkash" ? "bKash" : "Card / SSLCommerz"}</div>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setStep(2)} className="rounded-full glass border border-border px-5 py-3 text-sm">Back</button>
