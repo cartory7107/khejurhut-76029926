@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Search, ShoppingBag, Bell, User2, Menu, X, Heart } from "lucide-react";
+import { Search, ShoppingBag, User2, Menu, X, Heart, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Logo } from "./Logo";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
 import { useI18n } from "@/hooks/use-i18n";
+import { NotificationsBell } from "./NotificationsBell";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -48,9 +49,16 @@ export function Header() {
         >
           {lang === "EN" ? "EN / বাং" : "বাং / EN"}
         </button>
-        <button className="text-muted-foreground hover:text-gold transition" aria-label="Notifications">
-          <Bell className="h-5 w-5" />
-        </button>
+        <NotificationsBell />
+        <a
+          href="https://wa.me/8801700000000?text=Hello%20Khejur%20Hat%2C%20I%20need%20help"
+          target="_blank" rel="noreferrer"
+          className="hidden sm:inline-flex text-muted-foreground hover:text-gold transition"
+          aria-label="Contact support"
+          title="Chat with support"
+        >
+          <MessageCircle className="h-5 w-5" />
+        </a>
         <Link to="/account/wishlist" className="hidden sm:block text-muted-foreground hover:text-gold transition" aria-label="Wishlist">
           <Heart className="h-5 w-5" />
         </Link>

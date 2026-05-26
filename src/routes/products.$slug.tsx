@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Star, ShoppingBag, Heart, ArrowLeft, Package, Truck, Ticket, Copy } from "lucide-react";
+import { Star, ShoppingBag, Heart, ArrowLeft, Package, Truck, Ticket, Copy, Share2, Zap } from "lucide-react";
 import { fetchProductBySlug, fetchProducts } from "@/lib/products";
 import { supabase } from "@/integrations/supabase/client";
 import { bdt } from "@/lib/format";
 import { useCart } from "@/hooks/use-cart";
+import { useWishlist } from "@/hooks/use-wishlist";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { pushRecent } from "@/hooks/use-recent";
@@ -29,6 +30,8 @@ function PDP() {
     },
   });
   const { add } = useCart();
+  const { has, toggle } = useWishlist();
+  const nav = useNavigate();
   const [qty, setQty] = useState(1);
 
   useEffect(() => { if (p) pushRecent(p.id); }, [p]);
@@ -49,6 +52,26 @@ function PDP() {
   );
   if (!p) return <div className="mx-auto max-w-7xl p-12">Not found. <Link to="/products" className="text-gold">Back</Link></div>;
   const img = p.images?.[0] || "/images/products/medjool.jpg";
+  const wished = has(p.id);
+
+  const share = async () => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    const data = { title: p.name, text: `${p.name} — Khejur Hat`, url };
+    try {
+      if (typeof navigator !== "undefined" && (navigator as any).share) {
+        await (navigator as any).share(data);
+      } else {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied to clipboard");
+      }
+    } catch { /* user cancelled */ }
+  };
+
+  const buyNow = async () => {
+    if (p.stock === 0) return;
+    await add({ id: p.id }, qty);
+    nav({ to: "/checkout" });
+  };
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-10">
@@ -74,7 +97,7 @@ function PDP() {
             <div className="glass rounded-xl p-3 flex items-center gap-2"><Package className="h-4 w-4 text-gold" /><span>{p.stock > 0 ? `${p.stock} in stock` : "Sold out"}</span></div>
             <div className="glass rounded-xl p-3 flex items-center gap-2"><Truck className="h-4 w-4 text-gold" /><span>Express delivery</span></div>
           </div>
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center gap-3 pt-2 flex-wrap">
             <div className="flex items-center rounded-full glass border border-border/60">
               <button onClick={() => setQty(q => Math.max(1, q - 1))} className="px-3 py-2">−</button>
               <span className="w-8 text-center text-sm">{qty}</span>
@@ -83,10 +106,25 @@ function PDP() {
             <button
               disabled={p.stock === 0}
               onClick={() => { add({ id: p.id }, qty); toast.success("Added to cart"); }}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold py-3 text-sm font-semibold text-primary-foreground shadow-gold disabled:opacity-50">
+              className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-full bg-gradient-gold py-3 text-sm font-semibold text-primary-foreground shadow-gold disabled:opacity-50">
               <ShoppingBag className="h-4 w-4" /> Add to Cart
             </button>
-            <button className="rounded-full glass border border-border/60 p-3 hover:text-gold"><Heart className="h-4 w-4" /></button>
+            <button
+              disabled={p.stock === 0}
+              onClick={buyNow}
+              className="flex-1 min-w-[140px] inline-flex items-center justify-center gap-2 rounded-full glass border border-gold/50 py-3 text-sm font-semibold text-gold hover:bg-gold/10 disabled:opacity-50">
+              <Zap className="h-4 w-4" /> Buy Now
+            </button>
+            <button
+              onClick={() => { toggle(p.id); toast.success(wished ? "Removed from wishlist" : "Added to wishlist"); }}
+              aria-label="Wishlist"
+              className={`rounded-full glass border border-border/60 p-3 hover:text-gold transition ${wished ? "text-gold" : ""}`}>
+              <Heart className={`h-4 w-4 ${wished ? "fill-current" : ""}`} />
+            </button>
+            <button onClick={share} aria-label="Share"
+              className="rounded-full glass border border-border/60 p-3 hover:text-gold transition">
+              <Share2 className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </div>

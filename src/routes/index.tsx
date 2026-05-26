@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles, ShieldCheck, Truck, Quote, Leaf, Award, Mail } fr
 import hero from "@/assets/hero-date.jpg";
 import { fetchProducts, fetchCategories } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { CinematicShowcase } from "@/components/site/CinematicShowcase";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -78,6 +79,9 @@ function Home() {
           </div>
         </section>
       )}
+
+      {/* CINEMATIC REEL */}
+      {featured && featured.length > 0 && <CinematicShowcase products={featured} />}
 
       {/* FEATURED */}
       <section className="mx-auto max-w-7xl px-6 py-20">
