@@ -117,3 +117,27 @@ function AuthRefresher() {
   }, [router]);
   return null;
 }
+
+// Auto-recover from stale dynamic chunk references after a redeploy.
+// When the browser holds an old HTML pointing to a chunk hash that no
+// longer exists, the dynamic import fails — reload once to fetch fresh HTML.
+if (typeof window !== "undefined") {
+  const RELOAD_FLAG = "__chunk_reloaded_at";
+  const shouldReload = (msg: string) =>
+    /Failed to fetch dynamically imported module/i.test(msg) ||
+    /Importing a module script failed/i.test(msg) ||
+    /error loading dynamically imported module/i.test(msg);
+  const tryReload = () => {
+    const last = Number(sessionStorage.getItem(RELOAD_FLAG) || 0);
+    if (Date.now() - last < 10_000) return; // avoid reload loops
+    sessionStorage.setItem(RELOAD_FLAG, String(Date.now()));
+    window.location.reload();
+  };
+  window.addEventListener("error", (e) => {
+    if (e?.message && shouldReload(e.message)) tryReload();
+  });
+  window.addEventListener("unhandledrejection", (e) => {
+    const msg = (e?.reason && (e.reason.message || String(e.reason))) || "";
+    if (shouldReload(msg)) tryReload();
+  });
+}
