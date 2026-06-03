@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { Heart, ShoppingBag, Star, ShieldCheck } from "lucide-react";
 import { ProductImage } from "@/components/shop/ProductImage";
 import { bdt } from "@/lib/format";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import type { Product } from "@/lib/types";
 
 export function ProductCard({ p }: { p: Product }) {
+  const navigate = useNavigate();
   const { add } = useCart();
   const { has, toggle } = useWishlist();
   const wished = has(p.id);
@@ -17,14 +18,24 @@ export function ProductCard({ p }: { p: Product }) {
       ? Math.round((1 - p.price / p.compare_at_price) * 100)
       : 0;
 
+  const openProduct = () => {
+    navigate({ to: "/products/$slug", params: { slug: p.slug } });
+  };
+
   return (
-    <article className="card-3d group relative flex h-full flex-col overflow-hidden rounded-3xl border border-gold/10 bg-card/70 backdrop-blur-xl transition-all">
-      <Link
-        to="/products/$slug"
-        params={{ slug: p.slug }}
-        className="absolute inset-0 z-0"
-        aria-label={`View ${p.name}`}
-      />
+    <article
+      role="link"
+      tabIndex={0}
+      aria-label={`View ${p.name}`}
+      onClick={openProduct}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openProduct();
+        }
+      }}
+      className="card-3d group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-gold/10 bg-card/70 backdrop-blur-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
       <div className="relative aspect-[1/1.08] overflow-hidden bg-cocoa">
         <ProductImage
           src={img}
@@ -73,7 +84,10 @@ export function ProductCard({ p }: { p: Product }) {
             </span>
           )}
         </div>
-        <div className="relative z-20 mt-3 flex gap-2 md:opacity-0 md:translate-y-2 md:transition-all md:duration-300 md:group-hover:opacity-100 md:group-hover:translate-y-0">
+        <div
+          onKeyDown={(e) => e.stopPropagation()}
+          className="relative z-20 mt-3 flex gap-2 md:opacity-0 md:translate-y-2 md:transition-all md:duration-300 md:group-hover:opacity-100 md:group-hover:translate-y-0"
+        >
           <button
             onClick={(e) => {
               e.preventDefault();
