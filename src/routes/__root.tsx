@@ -14,6 +14,7 @@ import { Footer } from "@/components/site/Footer";
 import { NavProgress } from "@/components/site/NavProgress";
 import { ScrollToTop } from "@/components/site/ScrollToTop";
 import { PageLoader } from "@/components/site/PageLoader";
+import { OnboardingTour } from "@/components/site/OnboardingTour";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -100,6 +101,7 @@ function Shell() {
         <Outlet />
       </main>
       <Footer />
+      <OnboardingTour />
       <BottomNav />
     </div>
   );

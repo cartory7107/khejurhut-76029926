@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+export const Route = createFileRoute("/privacy")({ component: () => <Legal title="Privacy Policy" body="We collect only the information needed to process orders, support customers, protect accounts and improve the Khejur Hat shopping experience. We do not sell customer data." /> });
+function Legal({title,body}:{title:string;body:string}){return <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6"><div className="glass rounded-[2rem] p-6 sm:p-10"><p className="text-xs uppercase tracking-[0.32em] text-gold">Khejur Hat</p><h1 className="mt-2 font-display text-4xl">{title}</h1><p className="mt-5 leading-7 text-muted-foreground">{body}</p></div></section>}
