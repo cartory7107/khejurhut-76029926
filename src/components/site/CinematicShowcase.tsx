@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Play, Pause } from "lucide-react";
 import { bdt } from "@/lib/format";
+import { DEFAULT_PRODUCT_IMAGE, normalizeImageUrl } from "@/lib/images";
 import type { Product } from "@/lib/types";
 
 /** Auto-rotating cinematic product film — Ken Burns + 3D tilt + crossfade */
@@ -36,7 +37,10 @@ export function CinematicShowcase({ products }: { products: Product[] }) {
         </button>
       </div>
 
-      <div className="relative h-[480px] md:h-[560px] rounded-3xl overflow-hidden glass-strong" style={{ perspective: 1400 }}>
+      <div
+        className="relative h-[480px] md:h-[560px] rounded-3xl overflow-hidden glass-strong"
+        style={{ perspective: 1400 }}
+      >
         <AnimatePresence mode="sync">
           <motion.div
             key={p.id}
@@ -48,7 +52,7 @@ export function CinematicShowcase({ products }: { products: Product[] }) {
           >
             {/* Ken-Burns image */}
             <motion.img
-              src={p.images![0]}
+              src={normalizeImageUrl(p.images![0]) || DEFAULT_PRODUCT_IMAGE}
               alt={p.name}
               className="h-full w-full object-cover"
               initial={{ scale: 1.05, x: -20 }}
@@ -56,6 +60,10 @@ export function CinematicShowcase({ products }: { products: Product[] }) {
               transition={{ duration: 6, ease: "linear" }}
               loading="eager"
               style={{ willChange: "transform" }}
+              onError={(event) => {
+                if (event.currentTarget.getAttribute("src") !== DEFAULT_PRODUCT_IMAGE)
+                  event.currentTarget.src = DEFAULT_PRODUCT_IMAGE;
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
@@ -75,14 +83,18 @@ export function CinematicShowcase({ products }: { products: Product[] }) {
           >
             <div className="glass-strong rounded-2xl p-5 md:p-6 space-y-3 shadow-gold border border-gold/30">
               <p className="font-arabic text-gold text-sm">عرض حصري</p>
-              <h3 className="font-display text-3xl md:text-4xl text-gradient-gold leading-tight">{p.name}</h3>
+              <h3 className="font-display text-3xl md:text-4xl text-gradient-gold leading-tight">
+                {p.name}
+              </h3>
               {p.description && (
                 <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
               )}
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-display text-gold">{bdt(Number(p.price))}</span>
                 {p.compare_at_price && p.compare_at_price > p.price && (
-                  <span className="text-sm text-muted-foreground line-through">{bdt(Number(p.compare_at_price))}</span>
+                  <span className="text-sm text-muted-foreground line-through">
+                    {bdt(Number(p.compare_at_price))}
+                  </span>
                 )}
               </div>
               <Link
