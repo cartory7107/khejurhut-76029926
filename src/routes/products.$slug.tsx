@@ -63,6 +63,15 @@ function PDP() {
   }, [p]);
   useEffect(() => setActiveImage(0), [slug]);
 
+  const ratingBuckets = useMemo(() => {
+    const rating = p?.rating ?? 5;
+
+    return [5, 4, 3, 2, 1].map((score) => ({
+      score,
+      percent: Math.max(10, score === 5 ? Math.round(rating * 18) : 8),
+    }));
+  }, [p?.rating]);
+
   if (isLoading)
     return (
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -92,14 +101,6 @@ function PDP() {
   const shortDescription =
     p.description ||
     "Premium organic dates selected for freshness, natural sweetness and elegant gifting.";
-  const ratingBuckets = useMemo(
-    () =>
-      [5, 4, 3, 2, 1].map((score) => ({
-        score,
-        percent: Math.max(10, score === 5 ? Math.round(p.rating * 18) : 8),
-      })),
-    [p.rating],
-  );
 
   const share = async () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
