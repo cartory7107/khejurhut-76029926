@@ -79,6 +79,7 @@ function RootComponent() {
           <WishlistProvider>
           <I18nProvider>
             <AuthRefresher />
+            <RealtimeStoreSync />
             <NavProgress />
             <ScrollToTop />
             <Shell />
@@ -89,6 +90,40 @@ function RootComponent() {
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function RealtimeStoreSync() {
+  const { queryClient } = Route.useRouteContext();
+  useEffect(() => {
+    const invalidateProducts = () => {
+      for (const queryKey of [["products"], ["featured"], ["related"], ["product"], ["wishlist-products"], ["admin-products"], ["admin-stats"]]) {
+        queryClient.invalidateQueries({ queryKey, refetchType: "all" });
+      }
+    };
+    const invalidateCategories = () => {
+      for (const queryKey of [["cats"], ["cats-page"], ["admin-cats"], ["admin-cats-list"], ["products"]]) {
+        queryClient.invalidateQueries({ queryKey, refetchType: "all" });
+      }
+    };
+    const invalidateCoupons = () => {
+      for (const queryKey of [["active-coupons"], ["admin-coupons"]]) {
+        queryClient.invalidateQueries({ queryKey, refetchType: "all" });
+      }
+    };
+
+    const channel = supabase
+      .channel("storefront-live-sync")
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, invalidateProducts)
+      .on("postgres_changes", { event: "*", schema: "public", table: "categories" }, invalidateCategories)
+      .on("postgres_changes", { event: "*", schema: "public", table: "coupons" }, invalidateCoupons)
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
+  return null;
 }
 
 function Shell() {
