@@ -202,3 +202,51 @@
   }
   html { scroll-behavior: smooth; }
 }
+
+@layer utilities {
+  .premium-nav-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 18% 0%, oklch(0.82 0.16 80 / 0.16), transparent 34%),
+      linear-gradient(90deg, oklch(0.20 0.03 55 / 0.74), oklch(0.12 0.02 55 / 0.88));
+    mask-image: linear-gradient(#000, transparent 140%);
+  }
+  .premium-tour-orb {
+    position: absolute;
+    top: 14%;
+    left: 50%;
+    width: 112px;
+    height: 112px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 30%, white, var(--gold) 18%, transparent 62%);
+    filter: drop-shadow(0 0 32px oklch(0.82 0.16 80 / .55));
+    animation: orbit-guide 4.8s ease-in-out infinite;
+    opacity: .9;
+  }
+  .premium-tour-orb span {
+    position: absolute;
+    inset: 24px;
+    border-radius: inherit;
+    border: 1px solid oklch(0.82 0.16 80 / .55);
+    transform: rotateX(62deg) rotateZ(25deg);
+  }
+  .guide-marker { animation: guide-pulse 2.8s ease-in-out infinite; }
+  @keyframes orbit-guide {
+    0%, 100% { transform: translateX(-50%) translate3d(-38px, 0, 0) rotate(-4deg); }
+    50% { transform: translateX(-50%) translate3d(38px, -16px, 0) rotate(4deg); }
+  }
+  @keyframes guide-pulse {
+    0%,100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-5px) scale(1.04); }
+  }
+  @media (max-width: 767px) {
+    .card-3d:hover { transform: none; }
+    body { overflow-x: hidden; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .premium-tour-orb, .guide-marker { animation: none !important; }
+  }
+}

@@ -29,6 +29,38 @@ import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AccountWishlistRouteImport } from './routes/account.wishlist'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
+import { Route as TrackingRouteImport } from './routes/tracking'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ReturnsRouteImport } from './routes/returns'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as AboutRouteImport } from './routes/about'
+
+
+const TrackingRoute = TrackingRouteImport.update({
+  id: '/tracking',
+  path: '/tracking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReturnsRoute = ReturnsRouteImport.update({
+  id: '/returns',
+  path: '/returns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
@@ -132,6 +164,11 @@ const AccountOrdersRoute = AccountOrdersRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
+  '/terms': typeof TermsRoute
+  '/tracking': typeof TrackingRoute
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
@@ -154,6 +191,11 @@ export interface FileRoutesByFullPath {
   '/products/': typeof ProductsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
+  '/terms': typeof TermsRoute
+  '/tracking': typeof TrackingRoute
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
@@ -173,6 +215,11 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsIndexRoute
 }
 export interface FileRoutesById {
+  '/about': typeof AboutRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
+  '/terms': typeof TermsRoute
+  '/tracking': typeof TrackingRoute
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRouteWithChildren
@@ -206,6 +253,11 @@ export interface FileRouteTypes {
     | '/categories'
     | '/checkout'
     | '/products'
+    | '/about'
+    | '/privacy'
+    | '/returns'
+    | '/terms'
+    | '/tracking'
     | '/account/orders'
     | '/account/wishlist'
     | '/admin/categories'
@@ -237,6 +289,11 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/products'
+    | '/about'
+    | '/privacy'
+    | '/returns'
+    | '/terms'
+    | '/tracking'
   id:
     | '__root__'
     | '/'
@@ -259,6 +316,11 @@ export interface FileRouteTypes {
     | '/account/'
     | '/admin/'
     | '/products/'
+    | '/about'
+    | '/privacy'
+    | '/returns'
+    | '/terms'
+    | '/tracking'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -271,10 +333,51 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   ProductsRoute: typeof ProductsRouteWithChildren
   OrderSuccessIdRoute: typeof OrderSuccessIdRoute
+  AboutRoute: typeof AboutRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ReturnsRoute: typeof ReturnsRoute
+  TermsRoute: typeof TermsRoute
+  TrackingRoute: typeof TrackingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tracking': {
+      id: '/tracking'
+      path: '/tracking'
+      fullPath: '/tracking'
+      preLoaderRoute: typeof TrackingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products': {
       id: '/products'
       path: '/products'
@@ -477,6 +580,11 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   ProductsRoute: ProductsRouteWithChildren,
   OrderSuccessIdRoute: OrderSuccessIdRoute,
+  AboutRoute: AboutRoute,
+  PrivacyRoute: PrivacyRoute,
+  ReturnsRoute: ReturnsRoute,
+  TermsRoute: TermsRoute,
+  TrackingRoute: TrackingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

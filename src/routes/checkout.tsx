@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { bdt } from "@/lib/format";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Check, MapPin, CreditCard, ClipboardList, Tag, X } from "lucide-react";
+import { Check, MapPin, CreditCard, ClipboardList, Tag, X, ShieldCheck, Truck } from "lucide-react";
 import { GoldParticles } from "@/components/site/GoldParticles";
 
 export const Route = createFileRoute("/checkout")({ component: Checkout });
@@ -74,7 +74,7 @@ function Checkout() {
   ] as const;
 
   return (
-    <section className="relative mx-auto max-w-4xl px-6 py-12">
+    <section className="relative mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <GoldParticles density={30} />
       </div>
@@ -84,27 +84,27 @@ function Checkout() {
       </div>
 
       {/* Stepper */}
-      <ol className="flex items-center gap-3 mb-8 text-sm">
+      <ol className="mb-8 grid grid-cols-3 gap-2 text-xs sm:flex sm:items-center sm:gap-3 sm:text-sm">
         {steps.map((s, i) => {
           const done = step > s.n;
           const active = step === s.n;
           const Icon = s.icon;
           return (
-            <li key={s.n} className="flex items-center gap-3 flex-1">
+            <li key={s.n} className="flex min-w-0 items-center gap-2 sm:flex-1 sm:gap-3">
               <div className={`grid place-items-center h-9 w-9 rounded-full border transition ${done ? "bg-gradient-gold text-primary-foreground border-transparent" : active ? "border-gold text-gold shadow-gold" : "border-border text-muted-foreground"}`}>
                 {done ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
               </div>
-              <span className={active ? "text-gold" : done ? "text-foreground" : "text-muted-foreground"}>{s.label}</span>
-              {i < steps.length - 1 && <div className={`flex-1 h-px ${done ? "bg-gold/60" : "bg-border"}`} />}
+              <span className={`truncate ${active ? "text-gold" : done ? "text-foreground" : "text-muted-foreground"}`}>{s.label}</span>
+              {i < steps.length - 1 && <div className={`hidden sm:block flex-1 h-px ${done ? "bg-gold/60" : "bg-border"}`} />}
             </li>
           );
         })}
       </ol>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
           {step === 1 && (
-            <div className="glass rounded-2xl p-6 space-y-3">
+            <div className="glass rounded-[1.75rem] p-5 space-y-3 sm:p-6">
               <h2 className="font-display text-xl mb-2">Shipping address</h2>
               {(["full_name", "phone", "address", "city"] as const).map(k => (
                 <input key={k} required placeholder={k.replace("_", " ").replace(/\b\w/g, c => c.toUpperCase())}
@@ -120,7 +120,7 @@ function Checkout() {
             </div>
           )}
           {step === 2 && (
-            <div className="glass rounded-2xl p-6 space-y-3">
+            <div className="glass rounded-[1.75rem] p-5 space-y-3 sm:p-6">
               <h2 className="font-display text-xl mb-2">Payment method</h2>
               {([
                 { id: "pad", label: "Pay After Delivery", desc: "Receive first, pay at your doorstep — hand to hand" },
@@ -135,14 +135,14 @@ function Checkout() {
                   </div>
                 </label>
               ))}
-              <div className="flex gap-2 pt-2">
+              <div className="flex flex-col gap-2 pt-2 sm:flex-row">
                 <button onClick={() => setStep(1)} className="rounded-full glass border border-border px-5 py-3 text-sm">Back</button>
                 <button onClick={() => setStep(3)} className="flex-1 rounded-full bg-gradient-gold py-3 text-sm font-semibold text-primary-foreground shadow-gold">Review order</button>
               </div>
             </div>
           )}
           {step === 3 && (
-            <div className="glass rounded-2xl p-6 space-y-4">
+            <div className="glass rounded-[1.75rem] p-5 space-y-4 sm:p-6">
               <h2 className="font-display text-xl">Review & confirm</h2>
               <div className="text-sm space-y-1">
                 <div className="text-muted-foreground text-xs uppercase tracking-wider">Ship to</div>
@@ -153,7 +153,7 @@ function Checkout() {
                 <div className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Payment</div>
                 <div>{method === "pad" ? "Pay After Delivery (Doorstep)" : method === "bkash" ? "bKash" : "Card / SSLCommerz"}</div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <button onClick={() => setStep(2)} className="rounded-full glass border border-border px-5 py-3 text-sm">Back</button>
                 <button onClick={placeOrder} disabled={busy || items.length === 0}
                   className="flex-1 rounded-full bg-gradient-gold py-3 text-sm font-semibold text-primary-foreground shadow-gold pulse-glow disabled:opacity-50">
@@ -164,8 +164,8 @@ function Checkout() {
             </div>
           )}
         </div>
-        <div className="glass rounded-2xl p-6 space-y-3 h-fit">
-          <h3 className="font-display text-xl">Order summary</h3>
+        <div className="glass rounded-[1.75rem] p-5 space-y-3 h-fit lg:sticky lg:top-24 sm:p-6">
+          <h3 className="font-display text-xl">Order summary</h3><div className="grid grid-cols-2 gap-2 text-[11px] text-muted-foreground"><span className="rounded-full bg-gold/10 px-3 py-1 text-gold"><ShieldCheck className="mr-1 inline h-3 w-3" /> Secure</span><span className="rounded-full bg-gold/10 px-3 py-1 text-gold"><Truck className="mr-1 inline h-3 w-3" /> Fast ship</span></div>
           {items.length === 0 && (
             <p className="text-sm text-muted-foreground">Your cart is empty. <Link to="/products" className="text-gold">Browse</Link></p>
           )}
