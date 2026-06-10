@@ -15,6 +15,8 @@ import {
   Trash,
   UploadCloud,
   Loader2,
+  FolderPlus,
+  Check,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { generateProductImage } from "@/lib/ai-image.functions";
@@ -113,6 +115,9 @@ function AdminProducts() {
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [showNewCat, setShowNewCat] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
+  const [creatingCat, setCreatingCat] = useState(false);
   const genImage = useServerFn(generateProductImage);
 
   const invalidateProductCaches = useCallback(() => {
@@ -181,6 +186,8 @@ function AdminProducts() {
       toast.success(form.id ? "Product updated instantly" : "Product added instantly");
       setPreviewing(false);
       setForm(null);
+      setShowNewCat(false);
+      setNewCatName("");
     } catch (e: any) {
       toast.error(e?.message || "Failed to save product");
     } finally {
@@ -294,6 +301,39 @@ function AdminProducts() {
     }
   };
 
+  const createCategoryInline = async () => {
+    const trimmed = newCatName.trim();
+    if (!trimmed || creatingCat) return;
+    setCreatingCat(true);
+    try {
+      const catSlug = slugify(trimmed);
+      const { data: category, error } = await supabase
+        .from("categories")
+        .insert({ name: trimmed, slug: catSlug })
+        .select("*")
+        .single();
+      if (error) throw error;
+      // Update the categories cache so the dropdown shows the new category
+      qc.setQueryData<any[]>(["admin-cats"], (current = []) =>
+        category ? [...current, category] : current,
+      );
+      qc.invalidateQueries({ queryKey: ["admin-cats"] });
+      qc.invalidateQueries({ queryKey: ["cats"] });
+      qc.invalidateQueries({ queryKey: ["cats-page"] });
+      // Auto-select the newly created category
+      if (form && category) {
+        setForm({ ...form, category_id: category.id });
+      }
+      setNewCatName("");
+      setShowNewCat(false);
+      toast.success(`Category "${trimmed}" created & selected`);
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to create category");
+    } finally {
+      setCreatingCat(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -304,7 +344,11 @@ function AdminProducts() {
           </p>
         </div>
         <button
-          onClick={() => setForm({ ...empty, images: [""] })}
+          onClick={() => {
+            setForm({ ...empty, images: [""] });
+            setShowNewCat(false);
+            setNewCatName("");
+          }}
           className="rounded-full bg-gradient-gold px-4 py-2 text-sm font-semibold text-primary-foreground inline-flex items-center gap-2"
         >
           <Plus className="h-4 w-4" /> Add
@@ -345,7 +389,7 @@ function AdminProducts() {
                 </td>
                 <td className="p-3 text-right">
                   <button
-                    onClick={() =>
+                    onClick={() => {
                       setForm({
                         id: p.id,
                         name: p.name,
@@ -359,8 +403,10 @@ function AdminProducts() {
                         category_id: p.category_id,
                         is_featured: p.is_featured,
                         is_active: p.is_active,
-                      })
-                    }
+                      });
+                      setShowNewCat(false);
+                      setNewCatName("");
+                    }}
                     className="p-2 hover:text-gold"
                     disabled={deletingId === p.id}
                   >
@@ -394,7 +440,13 @@ function AdminProducts() {
       {form && (
         <div
           className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur p-4"
-          onClick={() => !saving && setForm(null)}
+          onClick={() => {
+            if (!saving) {
+              setForm(null);
+              setShowNewCat(false);
+              setNewCatName("");
+            }
+          }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -409,7 +461,16 @@ function AdminProducts() {
                 >
                   <Eye className="h-3.5 w-3.5" /> Preview
                 </button>
-                <button onClick={() => !saving && setForm(null)} disabled={saving}>
+                <button
+                  onClick={() => {
+                    if (!saving) {
+                      setForm(null);
+                      setShowNewCat(false);
+                      setNewCatName("");
+                    }
+                  }}
+                  disabled={saving}
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -441,7 +502,10 @@ function AdminProducts() {
               />
               <select
                 value={form.category_id || ""}
-                onChange={(e) => setForm({ ...form, category_id: e.target.value || null })}
+                onChange={(e) => {
+                  setForm({ ...form, category_id: e.target.value || null });
+                  if (e.target.value) setShowNewCat(false);
+                }}
                 className="rounded-xl bg-input border border-border px-3 py-2"
               >
                 <option value="">No category</option>
@@ -451,6 +515,62 @@ function AdminProducts() {
                   </option>
                 ))}
               </select>
+              {/* Inline Category Creation */}
+              <div className="space-y-2">
+                {!showNewCat ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowNewCat(true)}
+                    className="w-full rounded-xl border border-dashed border-gold/40 px-3 py-2 text-xs text-gold hover:bg-gold/10 inline-flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <FolderPlus className="h-3.5 w-3.5" /> Add new category
+                  </button>
+                ) : (
+                  <div className="glass rounded-xl p-3 space-y-2 border border-gold/30">
+                    <label className="text-xs uppercase tracking-wider text-gold font-semibold">
+                      Create New Category
+                    </label>
+                    <input
+                      placeholder="Category name"
+                      value={newCatName}
+                      onChange={(e) => setNewCatName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          createCategoryInline();
+                        }
+                      }}
+                      className="w-full rounded-xl bg-input border border-border px-3 py-2 text-sm"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={createCategoryInline}
+                        disabled={creatingCat || !newCatName.trim()}
+                        className="flex-1 rounded-full bg-gradient-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50 inline-flex items-center justify-center gap-1.5"
+                      >
+                        {creatingCat ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Check className="h-3.5 w-3.5" />
+                        )}
+                        {creatingCat ? "Creating..." : "Create & Select"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowNewCat(false);
+                          setNewCatName("");
+                        }}
+                        className="rounded-full glass border border-border px-3 py-1.5 text-xs hover:text-destructive"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <input
                 type="number"
                 placeholder="Price (৳)"
