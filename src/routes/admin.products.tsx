@@ -450,8 +450,9 @@ function AdminProducts() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="glass-strong rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-auto space-y-3"
+            className="glass-strong rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-auto space-y-5"
           >
+            {/* Header */}
             <div className="flex justify-between items-center">
               <h2 className="font-display text-2xl">{form.id ? "Edit" : "Add"} Product</h2>
               <div className="flex items-center gap-2">
@@ -475,46 +476,72 @@ function AdminProducts() {
                 </button>
               </div>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <input
-                placeholder="Name"
-                value={form.name}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    name: e.target.value,
-                    slug: form.slug || slugify(e.target.value),
-                  })
-                }
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              />
-              <input
-                placeholder="Name (Bangla)"
-                value={form.name_bn}
-                onChange={(e) => setForm({ ...form, name_bn: e.target.value })}
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              />
-              <input
-                placeholder="Slug"
-                value={form.slug}
-                onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              />
-              <select
-                value={form.category_id || ""}
-                onChange={(e) => {
-                  setForm({ ...form, category_id: e.target.value || null });
-                  if (e.target.value) setShowNewCat(false);
-                }}
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              >
-                <option value="">No category</option>
-                {cats?.map((c: any) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+
+            {/* Section: Product Info */}
+            <div className="space-y-3">
+              <h3 className="text-xs uppercase tracking-widest text-gold font-semibold border-b border-gold/20 pb-1">
+                Product Info
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Product Name</label>
+                  <input
+                    placeholder="e.g. Ajwa Premium Dates"
+                    value={form.name}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        name: e.target.value,
+                        slug: form.slug || slugify(e.target.value),
+                      })
+                    }
+                    className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">Name (Bangla)</label>
+                  <input
+                    placeholder="e.g. আজওয়া প্রিমিয়াম খেজুর"
+                    value={form.name_bn}
+                    onChange={(e) => setForm({ ...form, name_bn: e.target.value })}
+                    className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">URL Slug</label>
+                <input
+                  placeholder="auto-generated from name"
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
+                  className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Section: Category */}
+            <div className="space-y-3">
+              <h3 className="text-xs uppercase tracking-widest text-gold font-semibold border-b border-gold/20 pb-1">
+                Category
+              </h3>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">Select Category</label>
+                <select
+                  value={form.category_id || ""}
+                  onChange={(e) => {
+                    setForm({ ...form, category_id: e.target.value || null });
+                    if (e.target.value) setShowNewCat(false);
+                  }}
+                  className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                >
+                  <option value="">No category</option>
+                  {cats?.map((c: any) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
               {/* Inline Category Creation */}
               <div className="space-y-2">
                 {!showNewCat ? (
@@ -571,76 +598,104 @@ function AdminProducts() {
                   </div>
                 )}
               </div>
-              <input
-                type="number"
-                placeholder="Price (৳)"
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              />
-              <input
-                type="number"
-                placeholder="Compare price"
-                value={form.compare_at_price ?? ""}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    compare_at_price: e.target.value ? Number(e.target.value) : null,
-                  })
-                }
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              />
-              <input
-                type="number"
-                placeholder="Stock"
-                value={form.stock}
-                onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
-                className="rounded-xl bg-input border border-border px-3 py-2"
-              />
             </div>
 
-            <div className="space-y-2 pt-1">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <label className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Images (first is the cover)
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  <label className="cursor-pointer rounded-full bg-gradient-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground inline-flex items-center gap-1.5 disabled:opacity-50">
-                    {uploading ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : (
-                      <UploadCloud className="h-3.5 w-3.5" />
-                    )}{" "}
-                    {uploading ? "Uploading..." : "Upload from gallery"}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={uploadFiles}
-                      disabled={uploading}
-                      className="sr-only"
-                    />
+            {/* Section: Pricing & Stock */}
+            <div className="space-y-3">
+              <h3 className="text-xs uppercase tracking-widest text-gold font-semibold border-b border-gold/20 pb-1">
+                Pricing & Stock
+              </h3>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Selling Price (৳)
                   </label>
-                  <button
-                    type="button"
-                    onClick={aiGenerate}
-                    disabled={generating || uploading}
-                    className="rounded-full glass border border-gold/40 px-3 py-1.5 text-xs text-gold inline-flex items-center gap-1.5 disabled:opacity-50"
-                  >
-                    <Sparkles className="h-3.5 w-3.5" />{" "}
-                    {generating ? "Generating..." : "Generate with AI"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={addImage}
-                    className="rounded-full glass border border-border px-3 py-1.5 text-xs inline-flex items-center gap-1.5 hover:text-gold"
-                  >
-                    <ImagePlus className="h-3.5 w-3.5" /> Add URL
-                  </button>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={form.price}
+                    onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                    className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Compare / Old Price (৳)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={form.compare_at_price ?? ""}
+                    onChange={(e) =>
+                      setForm({
+                        ...form,
+                        compare_at_price: e.target.value ? Number(e.target.value) : null,
+                      })
+                    }
+                    className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    Stock Quantity
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="0"
+                    value={form.stock}
+                    onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
+                    className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+                  />
                 </div>
               </div>
+              {form.compare_at_price && form.compare_at_price > form.price && form.price > 0 && (
+                <p className="text-xs text-gold">
+                  Discount: {Math.round(((form.compare_at_price - form.price) / form.compare_at_price) * 100)}% off
+                </p>
+              )}
+            </div>
+
+            {/* Section: Images */}
+            <div className="space-y-3">
+              <h3 className="text-xs uppercase tracking-widest text-gold font-semibold border-b border-gold/20 pb-1">
+                Images
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <label className="cursor-pointer rounded-full bg-gradient-gold px-3 py-1.5 text-xs font-semibold text-primary-foreground inline-flex items-center gap-1.5 disabled:opacity-50">
+                  {uploading ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <UploadCloud className="h-3.5 w-3.5" />
+                  )}{" "}
+                  {uploading ? "Uploading..." : "Upload from gallery"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={uploadFiles}
+                    disabled={uploading}
+                    className="sr-only"
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={aiGenerate}
+                  disabled={generating || uploading}
+                  className="rounded-full glass border border-gold/40 px-3 py-1.5 text-xs text-gold inline-flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />{" "}
+                  {generating ? "Generating..." : "Generate with AI"}
+                </button>
+                <button
+                  type="button"
+                  onClick={addImage}
+                  className="rounded-full glass border border-border px-3 py-1.5 text-xs inline-flex items-center gap-1.5 hover:text-gold"
+                >
+                  <ImagePlus className="h-3.5 w-3.5" /> Add URL
+                </button>
+              </div>
               <p className="text-xs text-muted-foreground">
-                Mobile gallery uploads go to Supabase Storage. URL images still work as a fallback.
+                First image is the cover. Upload from gallery or paste a URL.
               </p>
               <div className="space-y-2">
                 {form.images.map((url, i) => (
@@ -670,31 +725,48 @@ function AdminProducts() {
               </div>
             </div>
 
-            <textarea
-              placeholder="Description"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={3}
-              className="w-full rounded-xl bg-input border border-border px-3 py-2"
-            />
-            <div className="flex gap-4 text-sm">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={form.is_featured}
-                  onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
-                />{" "}
-                Featured
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={form.is_active}
-                  onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
-                />{" "}
-                Active
-              </label>
+            {/* Section: Description */}
+            <div className="space-y-3">
+              <h3 className="text-xs uppercase tracking-widest text-gold font-semibold border-b border-gold/20 pb-1">
+                Description
+              </h3>
+              <textarea
+                placeholder="Write a detailed product description..."
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={3}
+                className="w-full rounded-xl bg-input border border-border px-3 py-2.5 text-sm"
+              />
             </div>
+
+            {/* Section: Status */}
+            <div className="space-y-3">
+              <h3 className="text-xs uppercase tracking-widest text-gold font-semibold border-b border-gold/20 pb-1">
+                Status
+              </h3>
+              <div className="flex gap-6 text-sm">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.is_featured}
+                    onChange={(e) => setForm({ ...form, is_featured: e.target.checked })}
+                    className="accent-gold"
+                  />{" "}
+                  Featured
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.is_active}
+                    onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
+                    className="accent-gold"
+                  />{" "}
+                  Active (visible on store)
+                </label>
+              </div>
+            </div>
+
+            {/* Save Button */}
             <button
               onClick={save}
               disabled={saving || uploading || generating}
