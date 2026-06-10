@@ -1,20 +1,30 @@
 import { createFileRoute, Link, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { LayoutDashboard, Package, ShoppingBag, Tag, ArrowLeft, Ticket, Users } from "lucide-react";
+import { hasSecretAccess } from "@/routes/kh-secret-access";
 
 export const Route = createFileRoute("/admin")({ component: AdminLayout });
 
 function AdminLayout() {
   const { user, isAdmin, isSuperAdmin, hasPermission, loading } = useAuth();
   const nav = useNavigate();
+  const [secretGranted, setSecretGranted] = useState(false);
+
+  useEffect(() => {
+    setSecretGranted(hasSecretAccess());
+  }, []);
+
+  // Secret access: anyone with the code can enter, even without admin role
+  const canAccess = isAdmin || secretGranted;
+
   useEffect(() => {
     if (loading) return;
     if (!user) nav({ to: "/auth", search: { redirect: "/admin" } });
   }, [user, loading, nav]);
 
   if (loading || !user) return <div className="p-12 text-center text-muted-foreground">Loading...</div>;
-  if (!isAdmin) return (
+  if (!canAccess) return (
     <div className="mx-auto max-w-md p-12 text-center space-y-3">
       <h1 className="font-display text-3xl text-gold">Admin access required</h1>
       <p className="text-sm text-muted-foreground">Your account does not have admin privileges. Ask a project admin to grant you the admin role.</p>
@@ -30,11 +40,15 @@ function AdminLayout() {
     { to: "/admin/coupons", label: "Coupons", icon: Ticket, perm: "coupons.manage" },
     { to: "/admin/users", label: "Users & Roles", icon: Users, perm: "users.manage", superOnly: true },
   ];
-  const links = allLinks.filter(l => {
-    if (l.superOnly) return isSuperAdmin;
-    if (!l.perm) return true;
-    return hasPermission(l.perm);
-  });
+
+  // Secret access users get all links (like super_admin)
+  const links = secretGranted
+    ? allLinks.filter(l => !l.superOnly || true) // show everything
+    : allLinks.filter(l => {
+        if (l.superOnly) return isSuperAdmin;
+        if (!l.perm) return true;
+        return hasPermission(l.perm);
+      });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 grid gap-6 md:grid-cols-[220px_1fr]">

