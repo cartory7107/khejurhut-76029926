@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Sparkles, ShieldCheck, Truck, Quote, Leaf, Award, Mail } from "lucide-react";
+import { ArrowRight, ShieldCheck, Quote, Leaf, Award, Mail } from "lucide-react";
 import hero from "@/assets/hero-date.jpg";
 import { fetchProducts, fetchCategories } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
@@ -21,14 +21,10 @@ function Home() {
         </div>
         <div className="mx-auto max-w-7xl px-6 py-24 grid gap-10 md:grid-cols-2 items-center">
           <div className="space-y-6 reveal">
-            <div className="inline-flex items-center gap-2 rounded-full glass px-3 py-1 text-xs text-gold">
-              <Sparkles className="h-3 w-3" /> Ramadan 1447 Collection
-            </div>
             <h1 className="font-display text-5xl md:text-7xl leading-[1.05]">
               The crown of dates,<br/>
               <span className="text-gradient-gold">delivered to your door.</span>
             </h1>
-            <p className="font-arabic text-2xl text-gold/90">أمانة إنتربرايز — فاخرة</p>
             <p className="text-muted-foreground max-w-md">
               Hand-picked Ajwa, Medjool, Safawi and rare luxury gift boxes from the heart of Arabia.
             </p>
@@ -42,20 +38,6 @@ function Home() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* USPs */}
-      <section className="mx-auto max-w-7xl px-6 -mt-10 relative z-10 grid gap-3 md:grid-cols-3">
-        {[
-          { i: Truck, t: "Free over ৳2000", d: "Express delivery nationwide" },
-          { i: ShieldCheck, t: "100% Authentic", d: "Direct from Madinah & California" },
-          { i: Sparkles, t: "Luxury Gifting", d: "Velvet boxes, gold ribbons" },
-        ].map(({ i: I, t, d }) => (
-          <div key={t} className="glass rounded-2xl p-5 flex items-center gap-4">
-            <div className="h-11 w-11 grid place-items-center rounded-full bg-gradient-gold text-primary-foreground"><I className="h-5 w-5" /></div>
-            <div><div className="font-medium">{t}</div><div className="text-xs text-muted-foreground">{d}</div></div>
-          </div>
-        ))}
       </section>
 
       {/* CATEGORIES */}
