@@ -19,9 +19,9 @@ function TrackingPage() {
     <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-14">
       <div className="rounded-[2rem] border border-gold/15 bg-gradient-surface p-6 text-center hero-particles sm:p-10">
         <p className="text-xs uppercase tracking-[0.32em] text-gold">Order tracking</p>
-        <h1 className="mt-2 font-display text-4xl sm:text-6xl">Track your Khejur Hat order</h1>
+        <h1 className="mt-2 font-display text-4xl sm:text-6xl">Track your AMANA ENTERPRISE order</h1>
         <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">Enter your tracking number or order code to view a clean status timeline.</p>
-        <form onSubmit={(e) => { e.preventDefault(); setSubmitted(code.trim() || "KH-DEMO-1001"); }} className="mx-auto mt-6 flex max-w-xl flex-col gap-2 sm:flex-row">
+        <form onSubmit={(e) => { e.preventDefault(); setSubmitted(code.trim() || "AE-DEMO-1001"); }} className="mx-auto mt-6 flex max-w-xl flex-col gap-2 sm:flex-row">
           <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Tracking number or order code" className="flex-1 rounded-full bg-input border border-border px-5 py-3 text-sm outline-none focus:border-gold" />
           <button className="rounded-full bg-gradient-gold px-6 py-3 text-sm font-semibold text-primary-foreground shadow-gold">Track order</button>
         </form>

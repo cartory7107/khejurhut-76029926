@@ -106,7 +106,7 @@ function PDP() {
     const url = typeof window !== "undefined" ? window.location.href : "";
     try {
       if (typeof navigator !== "undefined" && (navigator as any).share)
-        await (navigator as any).share({ title: p.name, text: `${p.name} — Khejur Hat`, url });
+        await (navigator as any).share({ title: p.name, text: `${p.name} — AMANA ENTERPRISE`, url });
       else {
         await navigator.clipboard.writeText(url);
         toast.success("Link copied to clipboard");

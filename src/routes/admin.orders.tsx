@@ -41,7 +41,7 @@ function AdminOrders() {
       th{background:#faf3e3;text-align:left;color:#7a5418}
       .total{font-size:18px;color:#a47429;font-weight:bold}
       .box{border:1px solid #eee;padding:14px;border-radius:8px;margin-top:12px}</style></head><body>
-      <h1>Khejur Hat</h1><div class="muted">Premium dates · Invoice</div>
+      <h1>AMANA ENTERPRISE</h1><div class="muted">Premium dates · Invoice</div>
       <div class="box"><div><b>Order:</b> ${o.order_number || o.id}</div>
       <div><b>Date:</b> ${new Date(o.created_at).toLocaleString()}</div>
       <div><b>Customer:</b> ${o.full_name} · ${o.phone}</div>
@@ -53,7 +53,7 @@ function AdminOrders() {
         ${Number(o.discount) > 0 ? `<div>Discount: −৳${o.discount}</div>` : ""}
         <div class="total">Total: ৳${o.total}</div>
       </div>
-      <p class="muted" style="margin-top:24px;text-align:center">Payment: Pay After Delivery · Thank you for shopping with Khejur Hat</p>
+      <p class="muted" style="margin-top:24px;text-align:center">Payment: Pay After Delivery · Thank you for shopping with AMANA ENTERPRISE</p>
       <script>window.print()</script></body></html>`);
     win.document.close();
   };

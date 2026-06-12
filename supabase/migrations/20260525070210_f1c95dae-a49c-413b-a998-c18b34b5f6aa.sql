@@ -10,7 +10,7 @@ SET search_path = public
 AS $$
 BEGIN
   IF NEW.order_number IS NULL OR NEW.order_number = '' THEN
-    NEW.order_number := 'KH-' || to_char(now(), 'YYMM') || '-' || lpad(nextval('public.order_number_seq')::text, 4, '0');
+    NEW.order_number := 'AE-' || to_char(now(), 'YYMM') || '-' || lpad(nextval('public.order_number_seq')::text, 4, '0');
   END IF;
   RETURN NEW;
 END;
@@ -26,7 +26,7 @@ CREATE TRIGGER set_order_number
 
 -- Backfill existing orders
 UPDATE public.orders
-SET order_number = 'KH-' || to_char(created_at, 'YYMM') || '-' || lpad(nextval('public.order_number_seq')::text, 4, '0')
+SET order_number = 'AE-' || to_char(created_at, 'YYMM') || '-' || lpad(nextval('public.order_number_seq')::text, 4, '0')
 WHERE order_number IS NULL;
 
 -- 2. Profiles username

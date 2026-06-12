@@ -49,7 +49,7 @@ export function OnboardingTour() {
               <Sparkles className="h-7 w-7" />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.32em] text-gold">Welcome to Khejur Hat</p>
+              <p className="text-xs uppercase tracking-[0.32em] text-gold">Welcome to AMANA ENTERPRISE</p>
               <h2 className="mt-2 font-display text-3xl">Would you like a quick tour of Urban Vogue?</h2>
               <p className="mt-2 text-sm text-muted-foreground">A premium guide will show you how to shop organic dates, honey and luxury gift collections faster.</p>
             </div>

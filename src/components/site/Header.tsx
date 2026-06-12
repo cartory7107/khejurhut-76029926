@@ -47,7 +47,7 @@ export function Header() {
           {lang === "EN" ? "EN / বাং" : "বাং / EN"}
         </button>
         <NotificationsBell />
-        <a href="https://wa.me/8801700000000?text=Hello%20Khejur%20Hat%2C%20I%20need%20help" target="_blank" rel="noreferrer"
+        <a href="https://wa.me/8801700000000?text=Hello%20AMANA%20ENTERPRISE%2C%20I%20need%20help" target="_blank" rel="noreferrer"
           className="hidden sm:inline-flex text-muted-foreground hover:text-gold transition" aria-label="Contact support" title="Chat with support">
           <MessageCircle className="h-5 w-5" />
         </a>

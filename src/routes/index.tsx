@@ -28,7 +28,7 @@ function Home() {
               The crown of dates,<br/>
               <span className="text-gradient-gold">delivered to your door.</span>
             </h1>
-            <p className="font-arabic text-2xl text-gold/90">خجور حات — فاخرة</p>
+            <p className="font-arabic text-2xl text-gold/90">أمانة إنتربرايز — فاخرة</p>
             <p className="text-muted-foreground max-w-md">
               Hand-picked Ajwa, Medjool, Safawi and rare luxury gift boxes from the heart of Arabia.
             </p>
@@ -103,7 +103,7 @@ function Home() {
           <div className="space-y-5">
             <p className="text-xs uppercase tracking-[0.3em] text-gold">Our heritage</p>
             <h2 className="font-display text-4xl md:text-5xl leading-tight">From the oases of <span className="text-gradient-gold">Madinah</span> to your majlis.</h2>
-            <p className="text-muted-foreground">For three generations, the Khejur Hat family has hand-selected each fruit at the peak of harvest — sun-dried under the Arabian sky, sealed within hours, and flown directly to Bangladesh. No middlemen. No compromises.</p>
+            <p className="text-muted-foreground">For three generations, the AMANA ENTERPRISE family has hand-selected each fruit at the peak of harvest — sun-dried under the Arabian sky, sealed within hours, and flown directly to Bangladesh. No middlemen. No compromises.</p>
             <div className="grid grid-cols-3 gap-4 pt-2">
               {[{i:Leaf,t:"100% Halal"},{i:Award,t:"Royal Grade"},{i:ShieldCheck,t:"Lab Tested"}].map(({i:I,t}) => (
                 <div key={t} className="glass rounded-xl p-3 text-center">
@@ -131,7 +131,7 @@ function Home() {
           {[
             { n: "Tahmina R.", c: "Dhaka", q: "The Ajwa was unreal — softer and sweeter than anything I've had from a Dubai souk. The velvet box made it perfect for Eid gifting." },
             { n: "Imran H.", c: "Chattogram", q: "Delivery was overnight and the packaging felt like a luxury watch. My family won't buy dates anywhere else now." },
-            { n: "Sumi A.", c: "Sylhet", q: "Khejur Hat's Medjool is on another level. The gold-foil presentation is genuinely museum-worthy." },
+            { n: "Sumi A.", c: "Sylhet", q: "AMANA ENTERPRISE's Medjool is on another level. The gold-foil presentation is genuinely museum-worthy." },
           ].map(t => (
             <figure key={t.n} className="glass rounded-2xl p-6 space-y-3">
               <Quote className="h-5 w-5 text-gold" />
