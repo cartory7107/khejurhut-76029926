@@ -106,7 +106,7 @@ function AdminCats() {
       });
       if (error) throw error;
       const { data: urlData } = supabase.storage.from(CATEGORY_IMAGE_BUCKET).getPublicUrl(path);
-      setForm((current) => current && { ...current, image_url: urlData.data.publicUrl });
+      setForm((current) => current && { ...current, image_url: urlData.publicUrl });
       toast.success("Category image uploaded");
     } catch (e: any) {
       const message = String(e?.message || "");
