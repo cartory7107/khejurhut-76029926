@@ -9,13 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrackingRouteImport } from './routes/tracking'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as KhSecretAccessRouteImport } from './routes/kh-secret-access'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsIndexRouteImport } from './routes/products.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -29,12 +35,6 @@ import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AccountWishlistRouteImport } from './routes/account.wishlist'
 import { Route as AccountOrdersRouteImport } from './routes/account.orders'
-import { Route as TrackingRouteImport } from './routes/tracking'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as ReturnsRouteImport } from './routes/returns'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as AboutRouteImport } from './routes/about'
-
 
 const TrackingRoute = TrackingRouteImport.update({
   id: '/tracking',
@@ -51,20 +51,19 @@ const ReturnsRoute = ReturnsRouteImport.update({
   path: '/returns',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-
-const ProductsRoute = ProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
+const KhSecretAccessRoute = KhSecretAccessRouteImport.update({
+  id: '/kh-secret-access',
+  path: '/kh-secret-access',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -95,6 +94,11 @@ const AdminRoute = AdminRouteImport.update({
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -164,19 +168,20 @@ const AccountOrdersRoute = AccountOrdersRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/about': typeof AboutRoute
-  '/privacy': typeof PrivacyRoute
-  '/returns': typeof ReturnsRoute
-  '/terms': typeof TermsRoute
-  '/tracking': typeof TrackingRoute
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
   '/checkout': typeof CheckoutRoute
+  '/kh-secret-access': typeof KhSecretAccessRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRouteWithChildren
+  '/returns': typeof ReturnsRoute
+  '/terms': typeof TermsRoute
+  '/tracking': typeof TrackingRoute
   '/account/orders': typeof AccountOrdersRoute
   '/account/wishlist': typeof AccountWishlistRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -191,16 +196,17 @@ export interface FileRoutesByFullPath {
   '/products/': typeof ProductsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/about': typeof AboutRoute
-  '/privacy': typeof PrivacyRoute
-  '/returns': typeof ReturnsRoute
-  '/terms': typeof TermsRoute
-  '/tracking': typeof TrackingRoute
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
   '/checkout': typeof CheckoutRoute
+  '/kh-secret-access': typeof KhSecretAccessRoute
+  '/privacy': typeof PrivacyRoute
+  '/returns': typeof ReturnsRoute
+  '/terms': typeof TermsRoute
+  '/tracking': typeof TrackingRoute
   '/account/orders': typeof AccountOrdersRoute
   '/account/wishlist': typeof AccountWishlistRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -215,20 +221,21 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsIndexRoute
 }
 export interface FileRoutesById {
-  '/about': typeof AboutRoute
-  '/privacy': typeof PrivacyRoute
-  '/returns': typeof ReturnsRoute
-  '/terms': typeof TermsRoute
-  '/tracking': typeof TrackingRoute
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/account': typeof AccountRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
   '/checkout': typeof CheckoutRoute
+  '/kh-secret-access': typeof KhSecretAccessRoute
+  '/privacy': typeof PrivacyRoute
   '/products': typeof ProductsRouteWithChildren
+  '/returns': typeof ReturnsRoute
+  '/terms': typeof TermsRoute
+  '/tracking': typeof TrackingRoute
   '/account/orders': typeof AccountOrdersRoute
   '/account/wishlist': typeof AccountWishlistRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -246,15 +253,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/account'
     | '/admin'
     | '/auth'
     | '/cart'
     | '/categories'
     | '/checkout'
-    | '/products'
-    | '/about'
+    | '/kh-secret-access'
     | '/privacy'
+    | '/products'
     | '/returns'
     | '/terms'
     | '/tracking'
@@ -273,10 +281,16 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/auth'
     | '/cart'
     | '/categories'
     | '/checkout'
+    | '/kh-secret-access'
+    | '/privacy'
+    | '/returns'
+    | '/terms'
+    | '/tracking'
     | '/account/orders'
     | '/account/wishlist'
     | '/admin/categories'
@@ -289,21 +303,22 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/products'
-    | '/about'
-    | '/privacy'
-    | '/returns'
-    | '/terms'
-    | '/tracking'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/account'
     | '/admin'
     | '/auth'
     | '/cart'
     | '/categories'
     | '/checkout'
+    | '/kh-secret-access'
+    | '/privacy'
     | '/products'
+    | '/returns'
+    | '/terms'
+    | '/tracking'
     | '/account/orders'
     | '/account/wishlist'
     | '/admin/categories'
@@ -316,52 +331,33 @@ export interface FileRouteTypes {
     | '/account/'
     | '/admin/'
     | '/products/'
-    | '/about'
-    | '/privacy'
-    | '/returns'
-    | '/terms'
-    | '/tracking'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
   CategoriesRoute: typeof CategoriesRoute
   CheckoutRoute: typeof CheckoutRoute
-  ProductsRoute: typeof ProductsRouteWithChildren
-  OrderSuccessIdRoute: typeof OrderSuccessIdRoute
-  AboutRoute: typeof AboutRoute
+  KhSecretAccessRoute: typeof KhSecretAccessRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProductsRoute: typeof ProductsRouteWithChildren
   ReturnsRoute: typeof ReturnsRoute
   TermsRoute: typeof TermsRoute
   TrackingRoute: typeof TrackingRoute
+  OrderSuccessIdRoute: typeof OrderSuccessIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/returns': {
-      id: '/returns'
-      path: '/returns'
-      fullPath: '/returns'
-      preLoaderRoute: typeof ReturnsRouteImport
+    '/tracking': {
+      id: '/tracking'
+      path: '/tracking'
+      fullPath: '/tracking'
+      preLoaderRoute: typeof TrackingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -371,11 +367,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tracking': {
-      id: '/tracking'
-      path: '/tracking'
-      fullPath: '/tracking'
-      preLoaderRoute: typeof TrackingRouteImport
+    '/returns': {
+      id: '/returns'
+      path: '/returns'
+      fullPath: '/returns'
+      preLoaderRoute: typeof ReturnsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products': {
@@ -383,6 +379,20 @@ declare module '@tanstack/react-router' {
       path: '/products'
       fullPath: '/products'
       preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kh-secret-access': {
+      id: '/kh-secret-access'
+      path: '/kh-secret-access'
+      fullPath: '/kh-secret-access'
+      preLoaderRoute: typeof KhSecretAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -425,6 +435,13 @@ declare module '@tanstack/react-router' {
       path: '/account'
       fullPath: '/account'
       preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -572,19 +589,20 @@ const ProductsRouteWithChildren = ProductsRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   AccountRoute: AccountRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   CartRoute: CartRoute,
   CategoriesRoute: CategoriesRoute,
   CheckoutRoute: CheckoutRoute,
-  ProductsRoute: ProductsRouteWithChildren,
-  OrderSuccessIdRoute: OrderSuccessIdRoute,
-  AboutRoute: AboutRoute,
+  KhSecretAccessRoute: KhSecretAccessRoute,
   PrivacyRoute: PrivacyRoute,
+  ProductsRoute: ProductsRouteWithChildren,
   ReturnsRoute: ReturnsRoute,
   TermsRoute: TermsRoute,
   TrackingRoute: TrackingRoute,
+  OrderSuccessIdRoute: OrderSuccessIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
