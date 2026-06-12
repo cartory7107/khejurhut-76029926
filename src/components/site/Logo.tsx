@@ -9,7 +9,7 @@ export function Logo({ withText = true }: { withText?: boolean }) {
         alt="AMANA ENTERPRISE"
         width={40}
         height={40}
-        className="h-9 w-9 drop-shadow-[0_0_12px_oklch(0.78_0.14_75/0.4)] transition-transform group-hover:scale-105"
+        className="h-9 w-9 rounded-lg drop-shadow-[0_0_12px_oklch(0.78_0.14_75/0.4)] transition-transform group-hover:scale-105"
       />
       {withText && (
         <div className="leading-none">
