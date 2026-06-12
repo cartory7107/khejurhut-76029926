@@ -10,7 +10,6 @@ import {
   Plus,
   X,
   Eye,
-  Sparkles,
   ImagePlus,
   Trash,
   UploadCloud,
@@ -18,17 +17,16 @@ import {
   FolderPlus,
   Check,
 } from "lucide-react";
-import { useServerFn } from "@tanstack/react-start";
-import { generateProductImage } from "@/lib/ai-image.functions";
 import { ProductImage } from "@/components/shop/ProductImage";
 import { normalizeImageUrl } from "@/lib/images";
 
 export const Route = createFileRoute("/admin/products")({ component: AdminProducts });
 
 const PRODUCT_IMAGE_BUCKET = "product-images";
+const CATEGORY_IMAGE_BUCKET = "category-images";
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const missingBucketMessage =
-  "Product image storage is not set up yet, so the image was saved inline.";
+  "Image storage is not set up yet, so the image was saved inline.";
 
 const isMissingBucketError = (message: string) => /bucket not found/i.test(message);
 
@@ -111,14 +109,14 @@ function AdminProducts() {
   });
   const [form, setForm] = useState<Form | null>(null);
   const [previewing, setPreviewing] = useState(false);
-  const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [showNewCat, setShowNewCat] = useState(false);
   const [newCatName, setNewCatName] = useState("");
+  const [newCatImage, setNewCatImage] = useState("");
   const [creatingCat, setCreatingCat] = useState(false);
-  const genImage = useServerFn(generateProductImage);
+  const [uploadingCatImg, setUploadingCatImg] = useState(false);
 
   const invalidateProductCaches = useCallback(() => {
     for (const queryKey of productQueryKeys) {
@@ -188,6 +186,7 @@ function AdminProducts() {
       setForm(null);
       setShowNewCat(false);
       setNewCatName("");
+      setNewCatImage("");
     } catch (e: any) {
       toast.error(e?.message || "Failed to save product");
     } finally {
@@ -195,25 +194,45 @@ function AdminProducts() {
     }
   };
 
-  const aiGenerate = async () => {
-    if (!form) return;
-    if (!form.name.trim()) return toast.error("Enter a product name first");
-    setGenerating(true);
+  const uploadCatImageInline = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (uploadingCatImg) return;
+    const files = Array.from(event.target.files || []);
+    event.target.value = "";
+    if (files.length === 0) return;
+
+    const file = files[0];
+    if (!file.type.startsWith("image/") || file.size > MAX_IMAGE_SIZE) {
+      return toast.error("Only image files up to 5MB are allowed");
+    }
+
+    setUploadingCatImg(true);
     try {
-      const { url } = await genImage({
-        data: {
-          prompt: `${form.name}${form.description ? `. ${form.description.slice(0, 160)}` : ""}`,
-        },
+      const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
+      const path = `categories/${crypto.randomUUID()}.${extension}`;
+      const { error } = await supabase.storage.from(CATEGORY_IMAGE_BUCKET).upload(path, file, {
+        cacheControl: "31536000",
+        upsert: false,
+        contentType: file.type,
       });
-      setForm({
-        ...form,
-        images: [normalizeImageUrl(url), ...form.images.map(normalizeImageUrl).filter(Boolean)],
-      });
-      toast.success("AI image generated");
+      if (error) throw error;
+      const { data } = supabase.storage.from(CATEGORY_IMAGE_BUCKET).getPublicUrl(path);
+      setNewCatImage(data.publicUrl);
+      toast.success("Category image uploaded");
     } catch (e: any) {
-      toast.error(e?.message || "Failed to generate image");
+      const message = String(e?.message || "");
+      if (isMissingBucketError(message)) {
+        try {
+          const dataUrl = await fileToDataUrl(file);
+          setNewCatImage(dataUrl);
+          toast.success(missingBucketMessage);
+        } catch {
+          toast.error("Failed to read image file");
+        }
+      } else {
+        toast.error(message || "Category image upload failed. Check storage bucket policies.");
+      }
     } finally {
-      setGenerating(false);
+      setUploadingCatImg(false);
     }
   };
 
@@ -307,9 +326,13 @@ function AdminProducts() {
     setCreatingCat(true);
     try {
       const catSlug = slugify(trimmed);
+      const insertData: any = { name: trimmed, slug: catSlug };
+      if (normalizeImageUrl(newCatImage)) {
+        insertData.image_url = normalizeImageUrl(newCatImage);
+      }
       const { data: category, error } = await supabase
         .from("categories")
-        .insert({ name: trimmed, slug: catSlug })
+        .insert(insertData)
         .select("*")
         .single();
       if (error) throw error;
@@ -325,6 +348,7 @@ function AdminProducts() {
         setForm({ ...form, category_id: category.id });
       }
       setNewCatName("");
+      setNewCatImage("");
       setShowNewCat(false);
       toast.success(`Category "${trimmed}" created & selected`);
     } catch (e: any) {
@@ -348,6 +372,7 @@ function AdminProducts() {
             setForm({ ...empty, images: [""] });
             setShowNewCat(false);
             setNewCatName("");
+            setNewCatImage("");
           }}
           className="rounded-full bg-gradient-gold px-4 py-2 text-sm font-semibold text-primary-foreground inline-flex items-center gap-2"
         >
@@ -406,6 +431,7 @@ function AdminProducts() {
                       });
                       setShowNewCat(false);
                       setNewCatName("");
+                      setNewCatImage("");
                     }}
                     className="p-2 hover:text-gold"
                     disabled={deletingId === p.id}
@@ -445,6 +471,7 @@ function AdminProducts() {
               setForm(null);
               setShowNewCat(false);
               setNewCatName("");
+              setNewCatImage("");
             }
           }}
         >
@@ -468,6 +495,7 @@ function AdminProducts() {
                       setForm(null);
                       setShowNewCat(false);
                       setNewCatName("");
+                      setNewCatImage("");
                     }
                   }}
                   disabled={saving}
@@ -570,6 +598,50 @@ function AdminProducts() {
                       className="w-full rounded-xl bg-input border border-border px-3 py-2 text-sm"
                       autoFocus
                     />
+                    {/* Category Image Upload */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <label className="cursor-pointer rounded-full bg-gradient-gold px-2.5 py-1 text-[11px] font-semibold text-primary-foreground inline-flex items-center gap-1 disabled:opacity-50">
+                          {uploadingCatImg ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <UploadCloud className="h-3 w-3" />
+                          )}
+                          {uploadingCatImg ? "Uploading..." : "Upload Photo"}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={uploadCatImageInline}
+                            disabled={uploadingCatImg}
+                            className="sr-only"
+                          />
+                        </label>
+                        {newCatImage && (
+                          <div className="relative">
+                            <div className="h-8 w-8 rounded-lg overflow-hidden border border-gold/30">
+                              <img
+                                src={normalizeImageUrl(newCatImage)}
+                                alt="Category"
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setNewCatImage("")}
+                              className="absolute -top-1.5 -right-1.5 h-4 w-4 rounded-full bg-destructive text-destructive-foreground grid place-items-center"
+                            >
+                              <X className="h-2.5 w-2.5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        placeholder="Or paste image URL"
+                        value={newCatImage}
+                        onChange={(e) => setNewCatImage(e.target.value)}
+                        className="w-full rounded-xl bg-input border border-border px-3 py-1.5 text-xs"
+                      />
+                    </div>
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -589,6 +661,7 @@ function AdminProducts() {
                         onClick={() => {
                           setShowNewCat(false);
                           setNewCatName("");
+                          setNewCatImage("");
                         }}
                         className="rounded-full glass border border-border px-3 py-1.5 text-xs hover:text-destructive"
                       >
@@ -679,15 +752,6 @@ function AdminProducts() {
                 </label>
                 <button
                   type="button"
-                  onClick={aiGenerate}
-                  disabled={generating || uploading}
-                  className="rounded-full glass border border-gold/40 px-3 py-1.5 text-xs text-gold inline-flex items-center gap-1.5 disabled:opacity-50"
-                >
-                  <Sparkles className="h-3.5 w-3.5" />{" "}
-                  {generating ? "Generating..." : "Generate with AI"}
-                </button>
-                <button
-                  type="button"
                   onClick={addImage}
                   className="rounded-full glass border border-border px-3 py-1.5 text-xs inline-flex items-center gap-1.5 hover:text-gold"
                 >
@@ -769,7 +833,7 @@ function AdminProducts() {
             {/* Save Button */}
             <button
               onClick={save}
-              disabled={saving || uploading || generating}
+              disabled={saving || uploading}
               className="w-full rounded-full bg-gradient-gold py-3 text-sm font-semibold text-primary-foreground shadow-gold disabled:opacity-50"
             >
               {saving ? "Saving..." : "Save instantly"}

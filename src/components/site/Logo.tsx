@@ -14,7 +14,6 @@ export function Logo({ withText = true }: { withText?: boolean }) {
       {withText && (
         <div className="leading-none">
           <div className="font-display text-xl tracking-wide text-gradient-gold">AMANA ENTERPRISE</div>
-          <div className="font-arabic text-[10px] text-muted-foreground -mt-0.5">أمانة إنتربرايز</div>
         </div>
       )}
     </Link>
