@@ -62,7 +62,7 @@ function AdminOrders() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <p className="font-arabic text-gold text-sm">إدارة الطلبات</p>
+          <p className="font-arabic text-gold text-sm">অর্ডার ব্যবস্থাপনা</p>
           <h1 className="font-display text-3xl text-gradient-gold">Orders</h1>
         </div>
       </div>

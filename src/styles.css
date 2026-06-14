@@ -32,7 +32,7 @@
   --color-gold-soft: var(--gold-soft);
   --color-cocoa: var(--cocoa);
   --font-display: "Cormorant Garamond", "Noto Serif Bengali", serif;
-  --font-arabic: "Amiri", serif;
+  --font-arabic: "Noto Sans Bengali", "Inter", sans-serif;
   --font-sans: "Inter", "Noto Sans Bengali", system-ui, sans-serif;
 }
 
