@@ -27,7 +27,7 @@ function OrderSuccess() {
           </div>
         </div>
 
-        <p className="font-arabic text-2xl text-gold mb-2 animate-fade-in">شكراً لك</p>
+        <p className="font-arabic text-2xl text-gold mb-2 animate-fade-in">আপনাকে ধন্যবাদ</p>
         <h1 className="font-display text-4xl md:text-5xl text-gradient-gold mb-3 animate-fade-in">
           Your premium order is being prepared
         </h1>
