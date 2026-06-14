@@ -82,7 +82,7 @@ export function CinematicShowcase({ products }: { products: Product[] }) {
             style={{ transformStyle: "preserve-3d" }}
           >
             <div className="glass-strong rounded-2xl p-5 md:p-6 space-y-3 shadow-gold border border-gold/30">
-              <p className="font-arabic text-gold text-sm">عرض حصري</p>
+              <p className="font-arabic text-gold text-sm">বিশেষ অফার</p>
               <h3 className="font-display text-3xl md:text-4xl text-gradient-gold leading-tight">
                 {p.name}
               </h3>
