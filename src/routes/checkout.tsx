@@ -79,7 +79,7 @@ function Checkout() {
         <GoldParticles density={30} />
       </div>
       <div className="mb-6">
-        <p className="font-arabic text-gold text-lg">الدفع الفاخر</p>
+        <p className="font-arabic text-gold text-lg">বিলাসবহুল চেকআউট</p>
         <h1 className="font-display text-4xl text-gradient-gold">Premium Checkout</h1>
       </div>
 
