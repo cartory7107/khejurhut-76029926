@@ -205,7 +205,7 @@ function PDP() {
             <div className="mb-3 flex items-center justify-between">
               <span className="text-sm font-medium">Quantity</span>
               <span className="text-xs text-muted-foreground">
-                Secure checkout · Pay After Delivery
+                Secure checkout · Cash on Delivery
               </span>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">

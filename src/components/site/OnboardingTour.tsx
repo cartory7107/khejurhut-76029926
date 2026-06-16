@@ -9,7 +9,7 @@ const steps = [
   { label: "Navigation", text: "Use the clean mobile bar for Home, Shop, Search and Cart. More support links live inside the menu.", icon: Sparkles },
   { label: "Search", text: "Find Ajwa, Medjool, gift boxes or honey quickly from the header or bottom search shortcut.", icon: Search },
   { label: "Product pages", text: "Tap any product card to open harvest details, trust notes, reviews and fast checkout actions.", icon: ShoppingBag },
-  { label: "Checkout", text: "Cart and checkout are full pages with secure indicators, shipping details and Pay After Delivery.", icon: Sparkles },
+  { label: "Checkout", text: "Cart and checkout are full pages with secure indicators, shipping details and Cash on Delivery.", icon: Sparkles },
 ];
 
 export function OnboardingTour() {

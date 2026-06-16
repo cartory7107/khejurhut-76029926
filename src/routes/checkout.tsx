@@ -50,7 +50,7 @@ function Checkout() {
     if (!user) { toast.error("Please sign in to place an order"); nav({ to: "/auth", search: { redirect: "/checkout" } }); return; }
     if (items.length === 0) return;
     setBusy(true);
-    const methodLabel = method === "pad" ? "Pay After Delivery" : method === "bkash" ? "bKash" : "Card / SSLCommerz";
+    const methodLabel = method === "pad" ? "Cash on Delivery" : method === "bkash" ? "bKash" : "Card / SSLCommerz";
     const { data: order, error } = await supabase.from("orders").insert({
       user_id: user.id, ...form,
       notes: `${form.notes}${form.notes ? " | " : ""}Payment: ${methodLabel}`,
@@ -123,7 +123,7 @@ function Checkout() {
             <div className="glass rounded-[1.75rem] p-5 space-y-3 sm:p-6">
               <h2 className="font-display text-xl mb-2">Payment method</h2>
               {([
-                { id: "pad", label: "Pay After Delivery", desc: "Receive first, pay at your doorstep — hand to hand" },
+                { id: "pad", label: "Cash on Delivery", desc: "Pay cash at your doorstep when you receive your order" },
                 { id: "bkash", label: "bKash", desc: "Mobile financial service (integration coming)" },
                 { id: "card", label: "Card / SSLCommerz", desc: "Visa, Mastercard, Amex (integration coming)" },
               ] as const).map((opt) => (
@@ -151,7 +151,7 @@ function Checkout() {
               </div>
               <div className="text-sm">
                 <div className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Payment</div>
-                <div>{method === "pad" ? "Pay After Delivery (Doorstep)" : method === "bkash" ? "bKash" : "Card / SSLCommerz"}</div>
+                <div>{method === "pad" ? "Cash on Delivery (Doorstep)" : method === "bkash" ? "bKash" : "Card / SSLCommerz"}</div>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <button onClick={() => setStep(2)} className="rounded-full glass border border-border px-5 py-3 text-sm">Back</button>

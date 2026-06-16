@@ -53,7 +53,7 @@ function AdminOrders() {
         ${Number(o.discount) > 0 ? `<div>Discount: −৳${o.discount}</div>` : ""}
         <div class="total">Total: ৳${o.total}</div>
       </div>
-      <p class="muted" style="margin-top:24px;text-align:center">Payment: Pay After Delivery · Thank you for shopping with AMANA ENTERPRISE</p>
+      <p class="muted" style="margin-top:24px;text-align:center">Payment: Cash on Delivery · Thank you for shopping with AMANA ENTERPRISE</p>
       <script>window.print()</script></body></html>`);
     win.document.close();
   };
