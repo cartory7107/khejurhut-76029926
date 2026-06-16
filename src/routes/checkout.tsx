@@ -16,7 +16,7 @@ function Checkout() {
   const nav = useNavigate();
   const [form, setForm] = useState({ full_name: "", phone: "", address: "", city: "Dhaka", notes: "" });
   const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [method, setMethod] = useState<"pad" | "bkash" | "card">("pad");
+  const [method, setMethod] = useState<"pad" | "bkash">("pad");
   const [busy, setBusy] = useState(false);
   const [couponInput, setCouponInput] = useState("");
   const [coupon, setCoupon] = useState<{ code: string; discount: number } | null>(null);
@@ -50,7 +50,7 @@ function Checkout() {
     if (!user) { toast.error("Please sign in to place an order"); nav({ to: "/auth", search: { redirect: "/checkout" } }); return; }
     if (items.length === 0) return;
     setBusy(true);
-    const methodLabel = method === "pad" ? "Cash on Delivery" : method === "bkash" ? "bKash" : "Card / SSLCommerz";
+    const methodLabel = method === "pad" ? "Cash on Delivery" : "bKash";
     const { data: order, error } = await supabase.from("orders").insert({
       user_id: user.id, ...form,
       notes: `${form.notes}${form.notes ? " | " : ""}Payment: ${methodLabel}`,
@@ -125,7 +125,6 @@ function Checkout() {
               {([
                 { id: "pad", label: "Cash on Delivery", desc: "Pay cash at your doorstep when you receive your order" },
                 { id: "bkash", label: "bKash", desc: "Mobile financial service (integration coming)" },
-                { id: "card", label: "Card / SSLCommerz", desc: "Visa, Mastercard, Amex (integration coming)" },
               ] as const).map((opt) => (
                 <label key={opt.id} className={`flex items-start gap-3 rounded-xl border p-4 cursor-pointer transition ${method === opt.id ? "border-gold bg-gold/5 shadow-gold" : "border-border hover:border-gold/40"}`}>
                   <input type="radio" name="pay" checked={method === opt.id} onChange={() => setMethod(opt.id)} className="mt-1 accent-[oklch(0.82_0.16_80)]" />
@@ -151,7 +150,7 @@ function Checkout() {
               </div>
               <div className="text-sm">
                 <div className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Payment</div>
-                <div>{method === "pad" ? "Cash on Delivery (Doorstep)" : method === "bkash" ? "bKash" : "Card / SSLCommerz"}</div>
+                <div>{method === "pad" ? "Cash on Delivery (Doorstep)" : "bKash"}</div>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <button onClick={() => setStep(2)} className="rounded-full glass border border-border px-5 py-3 text-sm">Back</button>
