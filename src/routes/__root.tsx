@@ -8,6 +8,7 @@ import { CartProvider } from "@/hooks/use-cart";
 import { WishlistProvider } from "@/hooks/use-wishlist";
 import { I18nProvider } from "@/hooks/use-i18n";
 import { Header } from "@/components/site/Header";
+import { SocialTopBar } from "@/components/site/SocialTopBar";
 import { Marquee } from "@/components/site/Marquee";
 import { BottomNav } from "@/components/site/BottomNav";
 import { Footer } from "@/components/site/Footer";
