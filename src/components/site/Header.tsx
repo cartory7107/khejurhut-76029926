@@ -116,10 +116,10 @@ export function Header() {
             {isAdmin && <Link to="/admin" className="col-span-2 rounded-2xl glass p-3 text-gold" onClick={() => setOpen(false)}>Admin</Link>}
           </div>
           <div className="mt-4 flex items-center justify-center gap-3 border-t border-border/30 pt-4">
-            <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-gold/80 hover:text-gold">
+            <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-[#1877F2] hover:text-[#1877F2]">
               <Facebook className="h-4 w-4" /> Facebook
             </a>
-            <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-gold/80 hover:text-gold">
+            <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-[#25D366] hover:text-[#25D366]">
               <WhatsAppIcon className="h-4 w-4" /> WhatsApp
             </a>
           </div>
