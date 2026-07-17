@@ -76,7 +76,7 @@ export function Header() {
               target="_blank"
               rel="noreferrer"
               aria-label="Facebook page"
-              className="group flex items-center gap-1.5 rounded-full border border-gold/10 bg-background/30 px-2.5 py-1 text-xs text-gold/90 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-gold/40 hover:bg-background/60 hover:text-gold hover:shadow-gold sm:px-3 sm:gap-2"
+              className="group flex items-center gap-1.5 rounded-full border border-[#1877F2]/30 bg-background/30 px-2.5 py-1 text-xs text-[#1877F2] backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-[#1877F2]/60 hover:bg-[#1877F2]/10 hover:text-[#1877F2] hover:shadow-[0_0_12px_rgba(24,119,242,0.25)] sm:px-3 sm:gap-2"
             >
               <Facebook className="h-3.5 w-3.5 transition-transform duration-300 group-hover:scale-110" />
               <span className="hidden sm:inline">Facebook</span>
@@ -86,7 +86,7 @@ export function Header() {
               target="_blank"
               rel="noreferrer"
               aria-label="WhatsApp chat"
-              className="group flex items-center gap-1.5 rounded-full border border-gold/10 bg-background/30 px-2.5 py-1 text-xs text-gold/90 backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-gold/40 hover:bg-background/60 hover:text-gold hover:shadow-gold sm:px-3 sm:gap-2"
+              className="group flex items-center gap-1.5 rounded-full border border-[#25D366]/30 bg-background/30 px-2.5 py-1 text-xs text-[#25D366] backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:border-[#25D366]/60 hover:bg-[#25D366]/10 hover:text-[#25D366] hover:shadow-[0_0_12px_rgba(37,211,102,0.25)] sm:px-3 sm:gap-2"
             >
               <WhatsAppIcon className="h-3.5 w-3.5 transition-transform duration-300 group-hover:scale-110" />
               <span className="hidden sm:inline">WhatsApp</span>
