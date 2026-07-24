@@ -1,5 +1,7 @@
-import logo from "@/assets/logo.jpg";
+import logoAsset from "@/assets/logo.jpg.asset.json";
 import { Link } from "@tanstack/react-router";
+
+const logo = logoAsset.url;
 
 export function Logo({ withText = false }: { withText?: boolean }) {
   return (
