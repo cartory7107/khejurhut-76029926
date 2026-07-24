@@ -1,4 +1,4 @@
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpg";
 import { Link } from "@tanstack/react-router";
 
 export function Logo({ withText = false }: { withText?: boolean }) {
